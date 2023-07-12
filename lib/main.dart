@@ -1,39 +1,130 @@
 import 'package:flutter/material.dart';
 
-import 'package:aradhana/screen/login_screen.dart';
-import 'package:aradhana/screen/otp_screen.dart';
-import 'package:aradhana/screen/splash_screen.dart';
-
-var routes = <String, WidgetBuilder>{
-  "/OTPScreen": (BuildContext context) => const OTPScreen(),
-  "/LoginScreen": (BuildContext context) => const LoginScreen(),
-};
+import 'package:real_estate/theme/color.dart';
+import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+import 'package:real_estate/pages/explore.dart';
+import 'package:real_estate/pages/agents.dart';
+import 'package:real_estate/pages/settings.dart';
+import 'package:real_estate/pages/home.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    initialRoute: '/',
+    theme: ThemeData(
+      fontFamily: 'Arial',
+      //primarySwatch: Color(0xff0f385a),
+      inputDecorationTheme: const InputDecorationTheme(
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(width: 3, color: AppColor.primary),
+        ),
+      ),
+    ),
+    routes: {
+      '/': (context) => const MyApp(),
+      '/home': (context) => const HomePage(),
+      '/listings': (context) => const ExplorePage(
+            listingType: "all",
+          ),
+      '/agents': (context) => const AgentsPage(),
+      '/cart': (context) => const HomePage(),
+      '/setting': (context) => const SettingsPage(),
+    },
+  ));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  int currentIndex = 0;
+  final controller = PageController(initialPage: 0);
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          // This is the theme of your application.
-          //
-          // Try running your application with "flutter run". You'll see the
-          // application has a blue toolbar. Then, without quitting the app, try
-          // changing the primarySwatch below to Colors.green and then invoke
-          // "hot reload" (press "r" in the console where you ran "flutter run",
-          // or simply save your changes to "hot reload" in a Flutter IDE).
-          // Notice that the counter didn't reset back to zero; the application
-          // is not restarted.
-          primarySwatch: Colors.blue,
+    return Scaffold(
+        bottomNavigationBar: BottomNavyBar(
+          selectedIndex: currentIndex,
+          showElevation: true,
+          itemCornerRadius: 8,
+          curve: Curves.easeInBack,
+          onItemSelected: (index) => setState(() {
+            currentIndex = index;
+            controller.animateToPage(index,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInSine);
+          }),
+          items: [
+            BottomNavyBarItem(
+              icon: const Icon(Icons.home_outlined),
+              title: const Text('Home'),
+              activeColor: AppColor.primary,
+              inactiveColor: AppColor.inActiveColor,
+              textAlign: TextAlign.center,
+            ),
+            BottomNavyBarItem(
+              icon: const Icon(Icons.menu),
+              title: const Text('Listing'),
+              activeColor: AppColor.primary,
+              inactiveColor: AppColor.inActiveColor,
+              textAlign: TextAlign.center,
+            ),
+            BottomNavyBarItem(
+              icon: const Icon(Icons.person),
+              title: const Text(
+                'Agents',
+              ),
+              activeColor: AppColor.primary,
+              inactiveColor: AppColor.inActiveColor,
+              textAlign: TextAlign.center,
+            ),
+            BottomNavyBarItem(
+              icon: const Icon(Icons.heart_broken_outlined),
+              title: const Text('Favourites'),
+              activeColor: AppColor.primary,
+              inactiveColor: AppColor.inActiveColor,
+              textAlign: TextAlign.center,
+            ),
+            BottomNavyBarItem(
+              icon: const Icon(Icons.settings_outlined),
+              title: const Text('Setting'),
+              activeColor: AppColor.primary,
+              inactiveColor: AppColor.inActiveColor,
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
-        home: const SplashScreen(),
-        routes: routes);
+        backgroundColor: AppColor.bottomBarColor,
+        body: PageView(
+            controller: controller,
+            scrollDirection: Axis.horizontal,
+            onPageChanged: (index) {
+              setState(() {
+                currentIndex = index;
+              });
+            },
+            children: const [
+              HomePage(),
+              ExplorePage(listingType: "all"),
+              AgentsPage(),
+              HomePage(),
+              SettingsPage()
+            ]));
   }
 }
