@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:real_estate/pages/dashboard.dart';
 
 class OTPPage extends StatefulWidget {
   const OTPPage({Key? key}) : super(key: key);
@@ -105,6 +106,10 @@ class _OTPPageState extends State<OTPPage> {
                     ),
                 onPressed: () {
                   _getOTPcode();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Dashboard()),
+                  );
                 },
                 child: const Text(
                   'NEXT',
