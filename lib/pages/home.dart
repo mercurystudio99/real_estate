@@ -6,7 +6,7 @@ import 'package:real_estate/utils/data.dart';
 import 'package:real_estate/widgets/category_item.dart';
 import 'package:real_estate/widgets/custom_image.dart';
 import 'package:real_estate/widgets/custom_textbox.dart';
-import 'package:real_estate/widgets/icon_box.dart';
+import 'package:real_estate/widgets/hot_item.dart';
 import 'package:real_estate/widgets/property_item.dart';
 import 'package:real_estate/widgets/recent_item.dart';
 import 'package:real_estate/widgets/recommend_item.dart';
@@ -165,6 +165,8 @@ class _HomePageState extends State<HomePage> {
       child: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
+            leading: const Icon(Icons.sort, size: 34, color: Colors.black),
+            backgroundColor: Colors.white,
             pinned: true,
             snap: true,
             floating: true,
@@ -183,20 +185,7 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Icon(Icons.dehaze_outlined, color: AppColor.darker),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Aradhana Real Estate",
-                  style: TextStyle(
-                    color: Colors.black87,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
+            SizedBox(width: 10),
             CustomImage(
               profile,
               width: 35,
@@ -398,23 +387,12 @@ class _HomePageState extends State<HomePage> {
   Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Row(
-        children: [
-          Expanded(
-            child: CustomTextBox(
-              hint: "Search",
-              prefix: Icon(Icons.search, color: Colors.grey),
-            ),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          IconBox(
-            child: Icon(Icons.filter_list_rounded, color: Colors.white),
-            bgColor: AppColor.secondary,
-            radius: 10,
-          )
-        ],
+      child: Expanded(
+        child: CustomTextBox(
+          hint: "Search...",
+          prefix: Icon(Icons.search, color: Colors.grey),
+          suffix: Icon(Icons.filter_alt, color: Colors.grey),
+        ),
       ),
     );
   }
@@ -505,15 +483,14 @@ class _HomePageState extends State<HomePage> {
   Widget _buildHot() {
     List<Widget> lists = List.generate(
       recent.length,
-      (index) => RecentItem(
+      (index) => HotItem(
         data: recent[index],
       ),
     );
 
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.only(bottom: 5, left: 15),
-      child: Row(children: lists),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: Column(children: lists),
     );
   }
 }

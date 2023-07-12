@@ -21,12 +21,11 @@ class CustomTextBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      padding: EdgeInsets.only(bottom: 3),
-      height: 40,
+      height: 50,
       decoration: BoxDecoration(
         color: AppColor.textBoxColor,
-        border: Border.all(color: AppColor.textBoxColor),
-        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.transparent),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: AppColor.shadowColor.withOpacity(.05),
@@ -42,7 +41,15 @@ class CustomTextBox extends StatelessWidget {
         decoration: InputDecoration(
           prefixIcon: prefix,
           suffixIcon: suffix,
-          border: InputBorder.none,
+          border: OutlineInputBorder(),
+          fillColor: Colors.white,
+          filled: true,
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+              borderSide: BorderSide(color: Colors.black)),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+              borderSide: BorderSide(color: Colors.black)),
           hintText: hint,
           hintStyle: TextStyle(
             color: Colors.grey,
