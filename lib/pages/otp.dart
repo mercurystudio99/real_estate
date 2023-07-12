@@ -49,17 +49,63 @@ class _OTPPageState extends State<OTPPage> {
     return Scaffold(
         body: ListView(
       children: <Widget>[
-        SizedBox(height: MediaQuery.of(context).size.height * 0.2),
-        Align(
-            alignment: Alignment.center,
-            child: Text(
-              "Aradhana",
+        SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(50),
+              child: Container(
+                width: 30,
+                height: 30,
+                color: Colors.grey.shade300,
+                child: Center(
+                  child: const Text(
+                    '1',
+                    style: TextStyle(color: Colors.grey, fontSize: 20),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 20),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(50),
+              child: Container(
+                width: 30,
+                height: 30,
+                color: Colors.red,
+                child: Center(
+                  child: const Text(
+                    '2',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "A",
               style: TextStyle(
-                color: Colors.black87,
+                color: Colors.red,
                 fontSize: 32,
                 fontWeight: FontWeight.w600,
               ),
-            )),
+            ),
+            Text(
+              "RADHANA",
+              style: TextStyle(
+                color: Colors.grey.shade700,
+                fontSize: 32,
+                fontWeight: FontWeight.w600,
+              ),
+            )
+          ],
+        ),
         SizedBox(height: MediaQuery.of(context).size.height * 0.15),
         Align(
             alignment: Alignment.topLeft,
@@ -96,6 +142,7 @@ class _OTPPageState extends State<OTPPage> {
               width: MediaQuery.of(context).size.width, //width of button
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
                     elevation: 10, //elevation of button
                     shape: RoundedRectangleBorder(
                         //to set border radius to button
