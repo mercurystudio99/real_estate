@@ -6,6 +6,7 @@ import 'package:real_estate/pages/explore.dart';
 import 'package:real_estate/pages/agents.dart';
 import 'package:real_estate/pages/settings.dart';
 import 'package:real_estate/pages/home.dart';
+import 'package:real_estate/pages/login.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -21,7 +22,7 @@ void main() {
       ),
     ),
     routes: {
-      '/': (context) => const MyApp(),
+      '/': (context) => const LoginPage(),
       '/home': (context) => const HomePage(),
       '/listings': (context) => const ExplorePage(
             listingType: "all",
