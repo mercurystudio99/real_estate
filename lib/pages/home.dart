@@ -262,7 +262,7 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Recommended Listings",
+                  "Recommended",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
                 GestureDetector(
@@ -291,7 +291,7 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Recent Listings",
+                  "Spotlights",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
                 MouseRegion(
@@ -299,7 +299,7 @@ class _HomePageState extends State<HomePage> {
                   child: GestureDetector(
                     onTap: () {
                       // Navigate to another page here
-                      navigateToDetailPage(context, "recent");
+                      navigateToDetailPage(context, "spotlight");
                     },
                     child: Text(
                       "See all",
@@ -313,9 +313,73 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(
             height: 20,
           ),
-          _buildRecent(),
+          _buildSpotlight(),
           const SizedBox(
-            height: 100,
+            height: 20,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Trending Properties",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () {
+                      // Navigate to another page here
+                      navigateToDetailPage(context, "trending");
+                    },
+                    child: Text(
+                      "See all",
+                      style: TextStyle(fontSize: 14, color: AppColor.darker),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          _buildTrending(),
+          const SizedBox(
+            height: 20,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Hot Properties",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () {
+                      // Navigate to another page here
+                      navigateToDetailPage(context, "hot");
+                    },
+                    child: Text(
+                      "See all",
+                      style: TextStyle(fontSize: 14, color: AppColor.darker),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          _buildHot(),
+          const SizedBox(
+            height: 20,
           ),
         ],
       ),
@@ -408,7 +472,37 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildRecent() {
+  Widget _buildSpotlight() {
+    List<Widget> lists = List.generate(
+      recent.length,
+      (index) => RecentItem(
+        data: recent[index],
+      ),
+    );
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.only(bottom: 5, left: 15),
+      child: Row(children: lists),
+    );
+  }
+
+  Widget _buildTrending() {
+    List<Widget> lists = List.generate(
+      recent.length,
+      (index) => RecentItem(
+        data: recent[index],
+      ),
+    );
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.only(bottom: 5, left: 15),
+      child: Row(children: lists),
+    );
+  }
+
+  Widget _buildHot() {
     List<Widget> lists = List.generate(
       recent.length,
       (index) => RecentItem(
