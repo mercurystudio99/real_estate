@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:real_estate/pages/otp.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -96,7 +97,13 @@ class _LoginPageState extends State<LoginPage> {
                                 5) //content padding inside button
                             ),
                         onPressed: () {
-                          if (_formKey.currentState!.validate()) {}
+                          if (_formKey.currentState!.validate()) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const OTPPage()),
+                            );
+                          }
                         },
                         child: const Text(
                           'NEXT',
@@ -107,6 +114,9 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       )),
                 ),
+                const SizedBox(
+                  height: 32,
+                )
               ],
             ),
           ),
