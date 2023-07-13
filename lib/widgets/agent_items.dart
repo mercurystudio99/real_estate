@@ -29,45 +29,50 @@ class AgentItem extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () {},
-            child: Row(
-              children: [
-                CustomImage(
-                  data["image"] ??
-                      'https://properties-api.myspacetech.in/aradhana.png',
-                  width: 50,
-                  height: 50,
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  // Wrap the Column with Expanded
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        data["name"],
-                        softWrap: true,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColor.primary,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 3,
-                      ),
-                      Text(
-                        "Agent",
-                        softWrap: true,
-                        style: TextStyle(
-                          fontSize: 15,
-                        ),
-                      ),
-                    ],
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  CustomImage(
+                    data["image"] ??
+                        'https://properties-api.myspacetech.in/aradhana.png',
+                    width: 50,
+                    height: 50,
                   ),
-                ),
-              ],
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    // Wrap the Column with Expanded
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data["name"],
+                          softWrap: true,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColor.primary,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 3,
+                        ),
+                        Text(
+                          "Agent",
+                          softWrap: true,
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Spacer(),
+                  const Icon(Icons.arrow_forward_ios)
+                ],
+              ),
             ),
           ),
           const SizedBox(
@@ -75,7 +80,7 @@ class AgentItem extends StatelessWidget {
           ),
           Container(
             color: Color.fromRGBO(245, 245, 245, 1),
-            padding: EdgeInsets.all(5.0),
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -92,7 +97,7 @@ class AgentItem extends StatelessWidget {
                           height: 5,
                         ),
                         Text(
-                          "Phone Number: " + data["phone"],
+                          "Phone: " + data["phone"],
                           style: TextStyle(fontSize: 13),
                         ),
                         const SizedBox(
@@ -119,7 +124,7 @@ class AgentItem extends StatelessWidget {
                           // Handle button press
                         },
                         icon: Icon(
-                          Icons.message,
+                          Icons.send,
                           size: 12,
                         ),
                         label: Text('Message',
@@ -128,7 +133,7 @@ class AgentItem extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             )),
                         style: ElevatedButton.styleFrom(
-                          primary:
+                          backgroundColor:
                               AppColor.primary, // Set the button color to red
                         )),
                   ),
