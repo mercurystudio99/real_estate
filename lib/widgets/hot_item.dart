@@ -110,15 +110,15 @@ class HotItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Icon(
-              Icons.chair,
-              color: Colors.red.shade800,
+              Icons.bed,
+              color: AppColor.primary,
             ),
             SizedBox(width: 5),
             Text(data["days_since"], style: TextStyle(fontSize: 12)),
             SizedBox(width: 10),
             Icon(
-              Icons.shower,
-              color: Colors.red.shade800,
+              Icons.bathtub,
+              color: AppColor.primary,
             ),
             SizedBox(width: 5),
             Text(data["days_since"], style: TextStyle(fontSize: 12)),

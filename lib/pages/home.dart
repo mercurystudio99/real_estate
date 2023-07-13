@@ -7,6 +7,7 @@ import 'package:real_estate/widgets/category_item.dart';
 import 'package:real_estate/widgets/custom_image.dart';
 import 'package:real_estate/widgets/custom_textbox.dart';
 import 'package:real_estate/widgets/hot_item.dart';
+import 'package:real_estate/widgets/spotlight_item.dart';
 import 'package:real_estate/widgets/property_item.dart';
 import 'package:real_estate/widgets/recent_item.dart';
 import 'package:real_estate/widgets/recommend_item.dart';
@@ -453,15 +454,14 @@ class _HomePageState extends State<HomePage> {
   Widget _buildSpotlight() {
     List<Widget> lists = List.generate(
       recent.length,
-      (index) => RecentItem(
+      (index) => SpotLightItem(
         data: recent[index],
       ),
     );
 
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.only(bottom: 5, left: 15),
-      child: Row(children: lists),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: Column(children: lists),
     );
   }
 
