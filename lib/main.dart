@@ -13,7 +13,7 @@ void main() {
     initialRoute: '/',
     theme: ThemeData(
       fontFamily: 'Arial',
-      //primarySwatch: Color(0xff0f385a),
+      // primarySwatch: Color(0xFF10174B),
       inputDecorationTheme: const InputDecorationTheme(
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(width: 3, color: AppColor.primary),

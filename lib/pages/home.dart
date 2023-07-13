@@ -165,14 +165,14 @@ class _HomePageState extends State<HomePage> {
       onRefresh: _refreshPage,
       child: CustomScrollView(
         slivers: <Widget>[
-          SliverAppBar(
-            leading: const Icon(Icons.sort, size: 34, color: Colors.black),
-            backgroundColor: Colors.white,
-            pinned: true,
-            snap: true,
-            floating: true,
-            title: _buildHeader(),
-          ),
+          // SliverAppBar(
+          //   leading: const Icon(Icons.sort, size: 34, color: Colors.black),
+          //   backgroundColor: Colors.white,
+          //   pinned: true,
+          //   snap: true,
+          //   floating: true,
+          //   title: _buildHeader(),
+          // ),
           SliverToBoxAdapter(child: _buildBody())
         ],
       ),
@@ -180,24 +180,23 @@ class _HomePageState extends State<HomePage> {
   }
 
   _buildHeader() {
-    return Column(
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(width: 10),
-            CustomImage(
-              profile,
-              width: 35,
-              height: 35,
-              trBackground: true,
-              borderColor: AppColor.primary,
-              radius: 10,
-            ),
-          ],
-        ),
-      ],
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Icon(Icons.sort, size: 34, color: Colors.black),
+          CustomImage(
+            profile,
+            width: 35,
+            height: 35,
+            trBackground: true,
+            borderColor: AppColor.primary,
+            radius: 10,
+          ),
+        ],
+      ),
     );
   }
 
@@ -206,6 +205,10 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const SizedBox(
+            height: 30,
+          ),
+          _buildHeader(),
           const SizedBox(
             height: 15,
           ),

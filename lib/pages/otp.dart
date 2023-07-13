@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:real_estate/pages/dashboard.dart';
+import 'package:real_estate/theme/color.dart';
 
 class OTPPage extends StatefulWidget {
   const OTPPage({Key? key}) : super(key: key);
@@ -73,7 +74,7 @@ class _OTPPageState extends State<OTPPage> {
               child: Container(
                 width: 30,
                 height: 30,
-                color: Colors.red,
+                color: AppColor.primary,
                 child: Center(
                   child: const Text(
                     '2',
@@ -91,7 +92,7 @@ class _OTPPageState extends State<OTPPage> {
             Text(
               "A",
               style: TextStyle(
-                color: Colors.red,
+                color: AppColor.primary,
                 fontSize: 32,
                 fontWeight: FontWeight.w600,
               ),
@@ -142,7 +143,7 @@ class _OTPPageState extends State<OTPPage> {
               width: MediaQuery.of(context).size.width, //width of button
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
+                    backgroundColor: AppColor.primary,
                     elevation: 10, //elevation of button
                     shape: RoundedRectangleBorder(
                         //to set border radius to button

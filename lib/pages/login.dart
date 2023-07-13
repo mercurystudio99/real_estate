@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:real_estate/pages/otp.dart';
+import 'package:real_estate/theme/color.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -28,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Container(
                   width: 30,
                   height: 30,
-                  color: Colors.red,
+                  color: AppColor.primary,
                   child: Center(
                     child: const Text(
                       '1',
@@ -61,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
               Text(
                 "A",
                 style: TextStyle(
-                  color: Colors.red,
+                  color: AppColor.primary,
                   fontSize: 32,
                   fontWeight: FontWeight.w600,
                 ),
@@ -134,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                           MediaQuery.of(context).size.width, //width of button
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
+                            backgroundColor: AppColor.primary,
                             elevation: 10, //elevation of button
                             shape: RoundedRectangleBorder(
                                 //to set border radius to button
