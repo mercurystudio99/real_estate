@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:real_estate/theme/color.dart';
 
 class UserProfilePage extends StatefulWidget {
   @override
@@ -66,22 +67,39 @@ class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Edit Profile'),
-        //backgroundColor: Color.fromRGBO(11, 18, 70, 1.0),
-        elevation: 0.0,
-      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 40),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.black,
+                    ),
+                    Text(
+                      'EDIT PROFILE',
+                      style: TextStyle(color: Colors.grey, fontSize: 22),
+                    ),
+                    Icon(
+                      Icons.check,
+                      color: Colors.black,
+                    )
+                  ]),
+            ),
+            const SizedBox(height: 15),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
               Center(
                 child: Stack(
                   children: <Widget>[
                     SizedBox(height: 20),
                     Container(
-                      height: 150,
+                      height: 100,
                       child: Center(
                         child: CircleAvatar(
                           radius: 75,
@@ -103,10 +121,24 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         onTap: () {
                           _getImage(ImageSource.camera);
                         },
-                        child: Icon(
-                          Icons.camera_alt,
-                          color: Colors.blue,
-                          size: 28.0,
+                        child: Container(
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(100)),
+                              border: Border.all(color: Colors.grey, width: 1)),
+                          padding: const EdgeInsets.all(3),
+                          child: ClipRRect(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(100)),
+                            child: Icon(
+                              Icons.camera_alt_outlined,
+                              color: Colors.black,
+                              size: 18,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -119,8 +151,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
               title: Text('PUBLIC INFORMATION'),
             ),
             ListTile(
-              title: Text('First Name'),
-              subtitle: Container(
+              title: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(
                       10.0), // Adjust the radius as needed
@@ -131,20 +162,34 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 ),
                 child: TextField(
                   controller: _fnameController,
+                  textInputAction: TextInputAction.next,
+                  textCapitalization: TextCapitalization.words,
                   decoration: InputDecoration(
-                    hintText: 'First Name',
-                    border:
-                        InputBorder.none, // Remove the default TextField border
-                    contentPadding: EdgeInsets.symmetric(
-                        horizontal:
-                            10.0), // Add padding to the TextField content
+                    suffixIcon: Icon(
+                      Icons.check,
+                      color: AppColor.green,
+                    ),
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    filled: true,
+                    fillColor: Colors.white,
+                    labelText: 'First name',
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.only(
+                        left: 14.0, bottom: 14.0, top: 14.0),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.transparent),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.transparent),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                 ),
               ),
             ),
             ListTile(
-              title: Text('Last Name'),
-              subtitle: Container(
+              title: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(
                       10.0), // Adjust the radius as needed
@@ -155,20 +200,34 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 ),
                 child: TextField(
                   controller: _lnameController,
+                  textInputAction: TextInputAction.next,
+                  textCapitalization: TextCapitalization.words,
                   decoration: InputDecoration(
-                    hintText: 'Last Name',
-                    border:
-                        InputBorder.none, // Remove the default TextField border
-                    contentPadding: EdgeInsets.symmetric(
-                        horizontal:
-                            10.0), // Add padding to the TextField content
+                    suffixIcon: Icon(
+                      Icons.check,
+                      color: AppColor.green,
+                    ),
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    filled: true,
+                    fillColor: Colors.white,
+                    labelText: 'Last name',
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.only(
+                        left: 14.0, bottom: 14.0, top: 14.0),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.transparent),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.transparent),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                 ),
               ),
             ),
             ListTile(
-              title: Text('Location'),
-              subtitle: Container(
+              title: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(
                       10.0), // Adjust the radius as needed
@@ -179,20 +238,34 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 ),
                 child: TextField(
                   controller: _addressController,
+                  textInputAction: TextInputAction.next,
+                  textCapitalization: TextCapitalization.words,
                   decoration: InputDecoration(
-                    hintText: 'Location',
-                    border:
-                        InputBorder.none, // Remove the default TextField border
-                    contentPadding: EdgeInsets.symmetric(
-                        horizontal:
-                            10.0), // Add padding to the TextField content
+                    suffixIcon: Icon(
+                      Icons.check,
+                      color: AppColor.green,
+                    ),
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    filled: true,
+                    fillColor: Colors.white,
+                    labelText: 'Location',
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.only(
+                        left: 14.0, bottom: 14.0, top: 14.0),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.transparent),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.transparent),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                 ),
               ),
             ),
             ListTile(
-              title: Text('Phone'),
-              subtitle: Container(
+              title: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(
                       10.0), // Adjust the radius as needed
@@ -203,20 +276,34 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 ),
                 child: TextField(
                   controller: _phoneController,
+                  textInputAction: TextInputAction.next,
+                  textCapitalization: TextCapitalization.words,
                   decoration: InputDecoration(
-                    hintText: 'Phone',
-                    border:
-                        InputBorder.none, // Remove the default TextField border
-                    contentPadding: EdgeInsets.symmetric(
-                        horizontal:
-                            10.0), // Add padding to the TextField content
+                    suffixIcon: Icon(
+                      Icons.check,
+                      color: AppColor.green,
+                    ),
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    filled: true,
+                    fillColor: Colors.white,
+                    labelText: 'Phone',
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.only(
+                        left: 14.0, bottom: 14.0, top: 14.0),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.transparent),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.transparent),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                 ),
               ),
             ),
             ListTile(
-              title: Text('Email'),
-              subtitle: Container(
+              title: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(
                       10.0), // Adjust the radius as needed
@@ -227,13 +314,27 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 ),
                 child: TextField(
                   controller: _emailController,
+                  textCapitalization: TextCapitalization.words,
                   decoration: InputDecoration(
-                    hintText: 'Email',
-                    border:
-                        InputBorder.none, // Remove the default TextField border
-                    contentPadding: EdgeInsets.symmetric(
-                        horizontal:
-                            10.0), // Add padding to the TextField content
+                    suffixIcon: Icon(
+                      Icons.check,
+                      color: AppColor.green,
+                    ),
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    filled: true,
+                    fillColor: Colors.white,
+                    labelText: 'Email',
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.only(
+                        left: 14.0, bottom: 14.0, top: 14.0),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.transparent),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.transparent),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                 ),
               ),
