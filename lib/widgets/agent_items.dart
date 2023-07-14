@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:real_estate/theme/color.dart';
+import 'package:real_estate/pages/mprofile.dart';
 import 'custom_image.dart';
 
 class AgentItem extends StatelessWidget {
@@ -28,7 +29,13 @@ class AgentItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => MProfilePage(id: data['id'])),
+              );
+            },
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Row(
