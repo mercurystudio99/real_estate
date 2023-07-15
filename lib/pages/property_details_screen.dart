@@ -383,6 +383,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                         .primary, // Set the button color to red
                                   )),
                             ),
+                            _buildReviews()
                           ],
                         ),
                       if (populars.isEmpty)
@@ -515,5 +516,333 @@ class _DetailsScreenState extends State<DetailsScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: thumbnail.length > 4 ? thumbnail.sublist(0, 4) : thumbnail,
         ));
+  }
+
+  Widget _buildReviews() {
+    return SizedBox(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 7, vertical: 20),
+        child: Column(children: [
+          Align(
+            alignment: Alignment.topLeft,
+            child: Text('Reviews',
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.only(left: 5),
+            leading: CustomImage(
+              'https://properties-api.myspacetech.in/aradhana.png',
+              width: 30,
+              height: 30,
+            ),
+            title: Text(
+              'Mary Thompson',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Html(
+            data:
+                'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+            style: {
+              'html': Style(
+                fontSize: FontSize(18.0),
+              ),
+            },
+          ),
+          SizedBox(height: 20),
+          GestureDetector(
+              onTap: () {
+                getAllReviews(onSuccess: (List<Widget> param) {
+                  _showAllReviewDialog(param);
+                });
+                // Navigator.restorablePush<void>(context, _fullscreenDialogRoute);
+              },
+              child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text('See All Reviews',
+                      style:
+                          TextStyle(color: AppColor.primary, fontSize: 15)))),
+        ]),
+      ),
+    );
+  }
+
+  void getAllReviews({required Function(List<Widget>) onSuccess}) {
+    final List<Widget> topbar = [
+      Card(
+        color: Colors.transparent,
+        shadowColor: Colors.transparent,
+        child: Column(children: [
+          const SizedBox(height: 40),
+          Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Icon(Icons.close, color: Colors.white),
+                  ))),
+          const SizedBox(height: 40)
+        ]),
+      )
+    ];
+    final List<Widget> reviews = [
+      Card(
+          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+              child: Column(children: [
+                ListTile(
+                  contentPadding: EdgeInsets.only(left: 5),
+                  leading: CustomImage(
+                    'https://properties-api.myspacetech.in/aradhana.png',
+                    width: 30,
+                    height: 30,
+                  ),
+                  title: Text(
+                    'Mary Thompson',
+                    style: TextStyle(
+                      color: AppColor.primary,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Html(
+                  data:
+                      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+                  style: {
+                    'html': Style(
+                      fontSize: FontSize(18.0),
+                    ),
+                  },
+                ),
+                const SizedBox(height: 10),
+                Row(children: [
+                  const Text(
+                    'Four minutes ago',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  const Spacer(),
+                  Icon(
+                    Icons.favorite,
+                    color: Colors.red,
+                  ),
+                  const SizedBox(width: 10),
+                  const Text('2'),
+                  const SizedBox(width: 40),
+                  Icon(Icons.messenger_outline_rounded)
+                ]),
+                const SizedBox(height: 10)
+              ]))),
+      Card(
+          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+              child: Column(children: [
+                ListTile(
+                  contentPadding: EdgeInsets.only(left: 5),
+                  leading: CustomImage(
+                    'https://properties-api.myspacetech.in/aradhana.png',
+                    width: 30,
+                    height: 30,
+                  ),
+                  title: Text(
+                    'Amy Perez',
+                    style: TextStyle(
+                      color: AppColor.primary,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Html(
+                  data:
+                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vulputate vitae nisi bibendum sagittis. Morbi ac suscipit risus. Nulla sollicitudin tortor sapien, vitae bibendum enim rhoncus ut.',
+                  style: {
+                    'html': Style(
+                      fontSize: FontSize(18.0),
+                    ),
+                  },
+                ),
+                const SizedBox(height: 10),
+                Row(children: [
+                  const Text(
+                    'Ten minutes ago',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  const Spacer(),
+                  Icon(
+                    Icons.favorite_outline,
+                  ),
+                  const SizedBox(width: 40),
+                  Icon(Icons.messenger_outline_rounded)
+                ]),
+                const SizedBox(height: 10)
+              ]))),
+      Card(
+          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+              child: Column(children: [
+                ListTile(
+                  contentPadding: EdgeInsets.only(left: 5),
+                  leading: CustomImage(
+                    'https://properties-api.myspacetech.in/aradhana.png',
+                    width: 30,
+                    height: 30,
+                  ),
+                  title: Text(
+                    'Mary Thompson',
+                    style: TextStyle(
+                      color: AppColor.primary,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Html(
+                  data:
+                      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+                  style: {
+                    'html': Style(
+                      fontSize: FontSize(18.0),
+                    ),
+                  },
+                ),
+                const SizedBox(height: 10),
+                Row(children: [
+                  const Text(
+                    'Four minutes ago',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  const Spacer(),
+                  Icon(
+                    Icons.favorite,
+                    color: Colors.red,
+                  ),
+                  const SizedBox(width: 10),
+                  const Text('2'),
+                  const SizedBox(width: 40),
+                  Icon(Icons.messenger_outline_rounded)
+                ]),
+                const SizedBox(height: 10)
+              ]))),
+    ];
+    final List<Widget> result = [...topbar, ...reviews];
+    onSuccess(result);
+  }
+
+  Future<void> _showAllReviewDialog(List<Widget> param) async {
+    await showGeneralDialog<void>(
+        context: context,
+        transitionDuration: Duration(milliseconds: 400),
+        pageBuilder: (bc, ania, anis) {
+          return SizedBox.expand(
+            child: Container(
+                color: Colors.black.withOpacity(0.5),
+                child: Stack(alignment: Alignment.bottomRight, children: [
+                  ListView(children: param),
+                  Positioned(
+                      bottom: 80,
+                      right: 20,
+                      child: FloatingActionButton(
+                          backgroundColor: AppColor.primary,
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) {
+                                return Padding(
+                                  padding: EdgeInsets.only(
+                                      bottom: MediaQuery.of(context)
+                                          .viewInsets
+                                          .bottom),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 50),
+                                          child: Align(
+                                              alignment: Alignment.center,
+                                              child: const Text(
+                                                'Add Review',
+                                                style: TextStyle(fontSize: 24),
+                                              ))),
+                                      Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 50),
+                                          child: TextField(
+                                            decoration: InputDecoration(
+                                                hintText: 'Enter Message'),
+                                            keyboardType:
+                                                TextInputType.multiline,
+                                            maxLines: 3,
+                                          )),
+                                      Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 50, vertical: 20),
+                                          child: Container(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    backgroundColor: AppColor
+                                                        .primary,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5)),
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            5)),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text(
+                                                  'Send',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 12.0),
+                                                ),
+                                              )))
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: Icon(Icons.edit_outlined)))
+                ])),
+          );
+        });
+  }
+
+  static Route<void> _fullscreenDialogRoute(
+    BuildContext context,
+    Object? arguments,
+  ) {
+    return MaterialPageRoute<void>(
+      builder: (context) => _FullScreenDialogDemo(),
+      fullscreenDialog: true,
+    );
+  }
+}
+
+class _FullScreenDialogDemo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(body: Center(child: Icon(Icons.heart_broken)));
   }
 }
