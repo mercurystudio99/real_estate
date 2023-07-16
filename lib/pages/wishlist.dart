@@ -116,15 +116,7 @@ class _WishlistPageState extends State<WishlistPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(
-              height: 30,
-            ),
-            _buildHeader(),
-            const SizedBox(
-              height: 30,
-            ),
-            _buildSearch(),
-            const SizedBox(
-              height: 30,
+              height: 80,
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),

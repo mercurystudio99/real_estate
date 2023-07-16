@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:real_estate/pages/user_profile.dart';
 import 'package:real_estate/pages/feedback.dart';
+import 'package:real_estate/pages/policy.dart';
 import 'package:real_estate/utils/common.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -33,12 +34,15 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: Text('Settings'),
-        ),
         body: ListView(
           padding: EdgeInsets.all(16.0),
           children: [
+            ListTile(
+              title: Text(
+                'Settings',
+                style: TextStyle(fontSize: 25),
+              ),
+            ),
             ListTile(
               title: Text('App Settings'),
             ),
@@ -75,6 +79,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 }),
             ListTile(
               title: Text('About'),
+            ),
+            ListTile(
+              leading: Icon(Icons.policy_outlined),
+              title: Text('Policies'),
+              trailing: Icon(Icons.arrow_forward_ios_sharp),
+              onTap: () {
+                AppCommons.navigateToPage(context, PolicyPage());
+              },
             ),
             ListTile(
               leading: Icon(Icons.feedback_outlined),
