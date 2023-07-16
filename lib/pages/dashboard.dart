@@ -6,6 +6,7 @@ import 'package:real_estate/pages/explore.dart';
 import 'package:real_estate/pages/agents.dart';
 import 'package:real_estate/pages/settings.dart';
 import 'package:real_estate/pages/home.dart';
+import 'package:real_estate/pages/wishlist.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -97,7 +98,7 @@ class _DashboardState extends State<Dashboard> {
               HomePage(),
               ExplorePage(listingType: "all"),
               AgentsPage(),
-              HomePage(),
+              WishlistPage(),
               SettingsPage()
             ]));
   }
