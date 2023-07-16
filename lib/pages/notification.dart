@@ -1,32 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:real_estate/widgets/custom_image.dart';
-import 'package:real_estate/widgets/agent_items.dart';
-import 'package:real_estate/widgets/custom_textbox.dart';
+import 'package:real_estate/widgets/notification_item.dart';
 import 'package:real_estate/theme/color.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class AgentsPage extends StatefulWidget {
-  const AgentsPage({Key? key}) : super(key: key);
+class NotificationPage extends StatefulWidget {
+  const NotificationPage({Key? key}) : super(key: key);
 
   @override
-  _AgentsPageState createState() => _AgentsPageState();
+  _NotificationPageState createState() => _NotificationPageState();
 }
 
-class _AgentsPageState extends State<AgentsPage> {
-  List<Map<String, dynamic>> agents = [];
+class _NotificationPageState extends State<NotificationPage> {
+  List<Map<String, dynamic>> notifications = [];
 
   @override
   void initState() {
     super.initState();
-    populateAgents();
+    populateNotifications();
   }
 
   Future<void> _refreshPage() async {
-    await populateAgents();
+    await populateNotifications();
   }
 
-  Future<void> populateAgents() async {
+  Future<void> populateNotifications() async {
     var url =
         'https://properties-api.myspacetech.in/ver1/users'; // Replace with your actual API endpoint URL
 
@@ -48,7 +47,7 @@ class _AgentsPageState extends State<AgentsPage> {
           updatedPopulars.add(newItem);
         }
         setState(() {
-          agents = updatedPopulars;
+          notifications = updatedPopulars;
         });
       } else {
         // Handle API error
@@ -60,55 +59,13 @@ class _AgentsPageState extends State<AgentsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
+    return Scaffold(
+        body: RefreshIndicator(
       onRefresh: _refreshPage,
       child: CustomScrollView(
-        slivers: <Widget>[
-          // SliverAppBar(
-          //   backgroundColor: AppColor.appBgColor,
-          //   pinned: true,
-          //   snap: true,
-          //   floating: true,
-          //   title: _buildHeader(),
-          // ),
-          SliverToBoxAdapter(child: _buildBody())
-        ],
+        slivers: <Widget>[SliverToBoxAdapter(child: _buildBody())],
       ),
-    );
-  }
-
-  // _buildSearch() {
-  //   return Row(
-  //     children: [
-  //       Expanded(
-  //         child: CustomTextBox(
-  //           hint: "Search",
-  //           prefix: Icon(Icons.search, color: Colors.grey),
-  //         ),
-  //       ),
-  //       const SizedBox(
-  //         width: 10,
-  //       ),
-  //       IconBox(
-  //         child: Icon(Icons.filter_list_rounded, color: Colors.white),
-  //         bgColor: AppColor.secondary,
-  //         radius: 10,
-  //       )
-  //     ],
-  //   );
-  // }
-
-  Widget _buildSearch() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Expanded(
-        child: CustomTextBox(
-          hint: "Search...",
-          prefix: Icon(Icons.search, color: Colors.grey),
-          suffix: Icon(Icons.filter_alt, color: Colors.grey),
-        ),
-      ),
-    );
+    ));
   }
 
   _buildHeader() {
@@ -146,26 +103,9 @@ class _AgentsPageState extends State<AgentsPage> {
             const SizedBox(
               height: 30,
             ),
-            _buildSearch(),
-            const SizedBox(
-              height: 30,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(left: 15),
-              child: Text(
-                "Agents",
-                style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+            _buildNotification(),
             const SizedBox(
               height: 20,
-            ),
-            _buildAgents(),
-            const SizedBox(
-              height: 100,
             ),
           ],
         ),
@@ -173,16 +113,16 @@ class _AgentsPageState extends State<AgentsPage> {
     );
   }
 
-  _buildAgents() {
+  _buildNotification() {
     List<Widget> lists = List.generate(
-      agents.length,
-      (index) => AgentItem(
-        data: agents[index],
+      notifications.length,
+      (index) => NotificationItem(
+        data: notifications[index],
       ),
     );
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(children: lists),
     );
   }
