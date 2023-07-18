@@ -3,6 +3,7 @@ import 'package:real_estate/pages/user_profile.dart';
 import 'package:real_estate/pages/feedback.dart';
 import 'package:real_estate/pages/policy.dart';
 import 'package:real_estate/pages/notification.dart';
+import 'package:real_estate/pages/upload.dart';
 import 'package:real_estate/utils/common.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -66,6 +67,15 @@ class _SettingsPageState extends State<SettingsPage> {
               onTap: () {
                 // Add reset settings logic here
                 AppCommons.navigateToPage(context, NotificationPage());
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.upload_file),
+              title: Text('Upload'),
+              trailing: Icon(Icons.arrow_forward_ios_sharp),
+              onTap: () {
+                // Add reset settings logic here
+                AppCommons.navigateToPage(context, UploadPage());
               },
             ),
             ListTile(
