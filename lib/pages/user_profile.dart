@@ -188,6 +188,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 ),
               ),
             ),
+            const SizedBox(height: 10),
             ListTile(
               title: Container(
                 decoration: BoxDecoration(
@@ -226,6 +227,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 ),
               ),
             ),
+            const SizedBox(height: 10),
             ListTile(
               title: Container(
                 decoration: BoxDecoration(
@@ -264,6 +266,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 ),
               ),
             ),
+            const SizedBox(height: 10),
             ListTile(
               title: Container(
                 decoration: BoxDecoration(
@@ -302,6 +305,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 ),
               ),
             ),
+            const SizedBox(height: 10),
             ListTile(
               title: Container(
                 decoration: BoxDecoration(
