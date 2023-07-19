@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:real_estate/widgets/custom_image.dart';
 import 'package:real_estate/widgets/agent_items.dart';
 import 'package:real_estate/widgets/custom_textbox.dart';
-import 'package:real_estate/theme/color.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -60,21 +58,20 @@ class _AgentsPageState extends State<AgentsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: _refreshPage,
-      child: CustomScrollView(
-        slivers: <Widget>[
-          // SliverAppBar(
-          //   backgroundColor: AppColor.appBgColor,
-          //   pinned: true,
-          //   snap: true,
-          //   floating: true,
-          //   title: _buildHeader(),
-          // ),
-          SliverToBoxAdapter(child: _buildBody())
-        ],
-      ),
-    );
+    return RefreshIndicator(onRefresh: _refreshPage, child: _buildBody()
+        // CustomScrollView(
+        //   slivers: <Widget>[
+        //     // SliverAppBar(
+        //     //   backgroundColor: AppColor.appBgColor,
+        //     //   pinned: true,
+        //     //   snap: true,
+        //     //   floating: true,
+        //     //   title: _buildHeader(),
+        //     // ),
+        //     SliverToBoxAdapter(child: _buildBody())
+        //   ],
+        // ),
+        );
   }
 
   // _buildSearch() {
@@ -101,12 +98,10 @@ class _AgentsPageState extends State<AgentsPage> {
   Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Expanded(
-        child: CustomTextBox(
-          hint: "Search...",
-          prefix: Icon(Icons.search, color: Colors.grey),
-          suffix: Icon(Icons.filter_alt, color: Colors.grey),
-        ),
+      child: CustomTextBox(
+        hint: "Search...",
+        prefix: Icon(Icons.search, color: Colors.grey),
+        suffix: Icon(Icons.filter_alt, color: Colors.grey),
       ),
     );
   }
@@ -119,13 +114,10 @@ class _AgentsPageState extends State<AgentsPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Icon(Icons.sort, size: 34, color: Colors.black),
-          CustomImage(
+          Image.asset(
             "assets/images/aradhana.png",
             width: 35,
             height: 35,
-            trBackground: true,
-            borderColor: AppColor.primary,
-            radius: 10,
           ),
         ],
       ),
@@ -181,7 +173,7 @@ class _AgentsPageState extends State<AgentsPage> {
       ),
     );
 
-    return Padding(
+    return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: Column(children: lists),
     );
