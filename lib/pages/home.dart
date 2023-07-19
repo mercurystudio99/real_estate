@@ -391,12 +391,10 @@ class _HomePageState extends State<HomePage> {
   Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Expanded(
-        child: CustomTextBox(
-          hint: "Search...",
-          prefix: Icon(Icons.search, color: Colors.grey),
-          suffix: Icon(Icons.filter_alt, color: Colors.grey),
-        ),
+      child: CustomTextBox(
+        hint: "Search...",
+        prefix: Icon(Icons.search, color: Colors.grey),
+        suffix: Icon(Icons.filter_alt, color: Colors.grey),
       ),
     );
   }
