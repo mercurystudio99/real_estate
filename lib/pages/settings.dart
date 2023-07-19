@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:real_estate/pages/user_profile.dart';
 import 'package:real_estate/pages/feedback.dart';
 import 'package:real_estate/pages/policy.dart';
+import 'package:real_estate/pages/emi.dart';
 import 'package:real_estate/pages/notification.dart';
 import 'package:real_estate/pages/upload.dart';
 import 'package:real_estate/utils/common.dart';
@@ -97,6 +98,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   // Add reset settings logic here
                   AppCommons.navigateToPage(context, UserProfilePage());
                 }),
+            ListTile(
+              leading: Icon(Icons.pie_chart_outline),
+              title: Text('EMI Calculate'),
+              trailing: Icon(Icons.arrow_forward_ios_sharp),
+              onTap: () {
+                AppCommons.navigateToPage(context, EMIPage());
+              },
+            ),
             ListTile(
               title: Text('About'),
             ),
