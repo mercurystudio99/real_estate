@@ -41,9 +41,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
       if (response.statusCode == 200) {
         final List<dynamic> properties = json.decode(response.body)["Images"];
-        // final List<dynamic> propdetails = json.decode(response.body)["data"];
-        // final List<dynamic> propfacilities =
-        //     json.decode(response.body)["facilities"];
+        final Map<String, dynamic> propdetails =
+            json.decode(response.body)["data"][0];
+        final List<dynamic> propfacilities =
+            propdetails['facilities'] != "" ? propdetails['facilities'] : [];
         List<Map<String, dynamic>> updatedPopulars = [];
         List<Map<String, dynamic>> updatedDetails = [];
         List<Map<String, dynamic>> updatedFacilities = [];
@@ -55,46 +56,30 @@ class _DetailsScreenState extends State<DetailsScreen> {
           updatedPopulars.add(newItem);
         }
 
-        // if (propfacilities != null) {
-        //   for (var facility in propfacilities) {
-        //     final Map<String, dynamic> newFacility = {
-        //       'name': facility['name'],
-        //       'distance': facility['distance'],
-        //     };
-        //     updatedFacilities.add(newFacility);
-        //   }
-        // }
+        for (var facility in propfacilities) {
+          final Map<String, dynamic> newFacility = {
+            'name': facility['name'],
+            'distance': facility['distance'],
+          };
+          updatedFacilities.add(newFacility);
+        }
 
-        // for (var items in propdetails) {
-        //   final Map<String, dynamic> newItemdetails = {
-        //     'id': items['id'].toString(),
-        //     'image': items['image'],
-        //     'name': items['title'],
-        //     'price': "\₹" + items['price'].toString(),
-        //     'location':
-        //         (items['address'] ?? "") + ", " + items['location_name'],
-        //     'is_favorited': false,
-        //     'bed': items['bed'].toString(),
-        //     'bathroom': items['bathroom'].toString(),
-        //     'square': items['square'].toString(),
-        //     'content': items['content'].toString(),
-        //     'rooms': items['room'].toString(),
-        //   };
-        //   updatedDetails.add(newItemdetails);
-        // }
         final Map<String, dynamic> newItemdetails = {
-          'id': '345234',
-          'image': '',
-          'name': 'Arlo',
-          'price': "\₹4000",
-          'location': "new city, MI country",
+          'id': propdetails['id'].toString(),
+          'image': propdetails['image'],
+          'name': propdetails['title'].toString(),
+          'price': "\₹" + propdetails['price'].toString(),
+          'location': (propdetails['address'] ?? "") +
+              ", " +
+              propdetails['location_name'],
           'is_favorited': false,
-          'bed': '32',
-          'bathroom': '12',
-          'square': '4',
-          'content':
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vulputate vitae nisi bibendum sagittis. Morbi ac suscipit risus. Nulla sollicitudin tortor sapien, vitae bibendum enim rhoncus ut. Donec imperdiet venenatis vulputate. Mauris rutrum, enim ornare fermentum pellentesque, enim lectus consequat velit, ut sagittis nunc mi vel libero. Praesent faucibus diam in mi faucibus cursus. Phasellus sollicitudin, diam vel malesuada commodo, orci erat bibendum ipsum, ut aliquet justo tellus id dui. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Cras egestas mollis enim. Nunc ac ornare dolor, eu volutpat justo. Mauris rhoncus malesuada gravida. Etiam a enim a turpis feugiat maximus. Sed eget velit arcu.',
-          'rooms': '6',
+          'bed': propdetails['bed'].toString(),
+          'bathroom': propdetails['bathroom'].toString(),
+          'square': propdetails['square'].toString(),
+          'content': propdetails['content'].toString(),
+          'rooms': propdetails['room'].toString() == 'null'
+              ? "0"
+              : propdetails['room'].toString(),
         };
         updatedDetails.add(newItemdetails);
 
@@ -147,7 +132,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      populars[0]['name'].toString(),
+                                      populars[0]['name'].toString().length > 20
+                                          ? populars[0]['name']
+                                                  .toString()
+                                                  .substring(0, 16) +
+                                              '...'
+                                          : populars[0]['name'].toString(),
                                       style: TextStyle(
                                         fontSize: 32,
                                         fontWeight: FontWeight.bold,
@@ -400,22 +390,25 @@ class _DetailsScreenState extends State<DetailsScreen> {
   }
 
   _buildFacilities() {
-    if (facilities != null) {
+    if (facilities.isNotEmpty) {
       return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15),
+        padding: EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: facilities.map((facility) {
             return Builder(builder: (BuildContext context) {
-              return Stack(children: [
-                Text(
-                  facility["name"].toString(),
-                  style: TextStyle(fontSize: 15, color: AppColor.darker),
-                ),
-                Text(
-                  facility["distance"].toString(),
-                  style: TextStyle(fontSize: 15, color: AppColor.darker),
-                )
-              ]);
+              return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      facility["name"].toString(),
+                      style: TextStyle(fontSize: 15, color: AppColor.darker),
+                    ),
+                    const SizedBox(width: 14),
+                    Text(
+                      facility["distance"].toString(),
+                      style: TextStyle(fontSize: 15, color: AppColor.darker),
+                    )
+                  ]);
             });
           }).toList(),
         ),
