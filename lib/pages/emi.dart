@@ -21,6 +21,27 @@ class _EMIPageState extends State<EMIPage> {
         body: SingleChildScrollView(
             child: Column(children: [
       Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                height: 50,
+                width: 50,
+                child: Icon(
+                  Icons.arrow_back_ios_new,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      Padding(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: Row(children: [
             Expanded(

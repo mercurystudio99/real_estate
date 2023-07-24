@@ -391,27 +391,58 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   _buildFacilities() {
     if (facilities.isNotEmpty) {
+      List<Map<String, dynamic>> evenIndexElements = [];
+      List<Map<String, dynamic>> oddIndexElements = [];
+      facilities.asMap().forEach((key, val) {
+        if (key % 2 == 0) {
+          evenIndexElements.add(val);
+        } else {
+          oddIndexElements.add(val);
+        }
+      });
+
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: facilities.map((facility) {
+        child: Row(children: [
+          Expanded(
+              child: Column(
+                  children: evenIndexElements.map((facility) {
             return Builder(builder: (BuildContext context) {
-              return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      facility["name"].toString(),
-                      style: TextStyle(fontSize: 15, color: AppColor.darker),
-                    ),
-                    const SizedBox(width: 14),
-                    Text(
-                      facility["distance"].toString(),
-                      style: TextStyle(fontSize: 15, color: AppColor.darker),
-                    )
-                  ]);
+              return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                const Icon(Icons.build_outlined, size: 16),
+                const SizedBox(width: 10),
+                Text(
+                  facility["name"].toString(),
+                  style: TextStyle(fontSize: 15, color: AppColor.darker),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  facility["distance"].toString(),
+                  style: TextStyle(fontSize: 15, color: AppColor.darker),
+                )
+              ]);
             });
-          }).toList(),
-        ),
+          }).toList())),
+          Expanded(
+              child: Column(
+                  children: oddIndexElements.map((facility) {
+            return Builder(builder: (BuildContext context) {
+              return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                const Icon(Icons.build_outlined, size: 16),
+                const SizedBox(width: 10),
+                Text(
+                  facility["name"].toString(),
+                  style: TextStyle(fontSize: 15, color: AppColor.darker),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  facility["distance"].toString(),
+                  style: TextStyle(fontSize: 15, color: AppColor.darker),
+                )
+              ]);
+            });
+          }).toList()))
+        ]),
       );
     } else {
       return Center(child: Text("No available facilities"));
