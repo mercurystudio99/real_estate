@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:real_estate/utils/globals.dart' as global;
 import 'package:real_estate/theme/color.dart';
 import 'package:real_estate/utils/constants.dart';
 
@@ -14,15 +15,15 @@ class MProfilePage extends StatefulWidget {
 
 class _MProfilePageState extends State<MProfilePage> {
   late String id;
-  final Map<String, dynamic> info = {
-    'id': '23',
+  late Map<String, dynamic> info = {
+    'id': '',
     'image': '',
-    'name': 'Amy Rachel',
-    'email': 'kevin@gmail.com',
-    'phone': '3423523',
-    'location': "new city, MI country",
-    'reviews': '34',
-    'listings': '4',
+    'name': '',
+    'email': '',
+    'phone': '',
+    'location': '',
+    'reviews': '4',
+    'listings': '2',
   };
   static bool isDocument = false;
 
@@ -31,6 +32,15 @@ class _MProfilePageState extends State<MProfilePage> {
     super.initState();
     id = widget.id;
     agent(id);
+    global.users.forEach((element) {
+      if (element["id"] == id) {
+        info['id'] = element['id'];
+        info['image'] = element['image'];
+        info['name'] = element['name'];
+        info['email'] = element['email'];
+        info['phone'] = element['phone'];
+      }
+    });
   }
 
   // Future<void> _refreshPage() async {
@@ -93,7 +103,7 @@ class _MProfilePageState extends State<MProfilePage> {
                           bottomLeft: Radius.elliptical(500, 200),
                           bottomRight: Radius.elliptical(500, 200)),
                       child: Image.network(
-                        'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80',
+                        'https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80',
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -149,10 +159,13 @@ class _MProfilePageState extends State<MProfilePage> {
                     child: ClipRRect(
                       borderRadius:
                           const BorderRadius.all(Radius.circular(100)),
-                      child: Image.asset(
-                        'assets/images/aradhana.png',
-                        fit: BoxFit.cover,
-                      ),
+                      child: (info["image"] != null)
+                          ? Image.network(info["image"],
+                              width: 100, height: 100, fit: BoxFit.cover)
+                          : Image.asset(
+                              'assets/images/aradhana.png',
+                              fit: BoxFit.cover,
+                            ),
                     ),
                   ),
                 ),
@@ -338,34 +351,7 @@ class _MProfilePageState extends State<MProfilePage> {
               ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 child: Image.network(
-                  'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
-                  width: size.width * 0.4,
-                  height: size.width * 0.4,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                child: Image.network(
-                  'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
-                  width: size.width * 0.4,
-                  height: size.width * 0.4,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(width: 5),
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                child: Image.network(
-                  'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
+                  'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80',
                   width: size.width * 0.4,
                   height: size.width * 0.4,
                   fit: BoxFit.cover,

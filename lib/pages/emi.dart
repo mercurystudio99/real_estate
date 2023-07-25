@@ -21,9 +21,9 @@ class _EMIPageState extends State<EMIPage> {
         body: SingleChildScrollView(
             child: Column(children: [
       Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+        padding: EdgeInsets.only(top: 20),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             InkWell(
               onTap: () {
@@ -34,9 +34,14 @@ class _EMIPageState extends State<EMIPage> {
                 width: 50,
                 child: Icon(
                   Icons.arrow_back_ios_new,
-                  color: Colors.white,
+                  color: Colors.black,
                 ),
               ),
+            ),
+            SizedBox(width: MediaQuery.of(context).size.width * 0.22),
+            const Text(
+              'EMI Calculate',
+              style: TextStyle(fontSize: 20),
             ),
           ],
         ),
@@ -214,7 +219,7 @@ class _EMIPageState extends State<EMIPage> {
             const Spacer(),
             const Text('83')
           ])),
-      const SizedBox(height: 30)
+      const SizedBox(height: 80)
     ])));
   }
 }

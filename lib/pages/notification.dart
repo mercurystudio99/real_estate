@@ -75,14 +75,16 @@ class _NotificationPageState extends State<NotificationPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Icon(Icons.sort, size: 34, color: Colors.black),
-          CustomImage(
+          IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.arrow_back_ios,
+                  size: 28, color: Colors.black)),
+          Image.asset(
             "assets/images/aradhana.png",
             width: 35,
             height: 35,
-            trBackground: true,
-            borderColor: AppColor.primary,
-            radius: 10,
           ),
         ],
       ),

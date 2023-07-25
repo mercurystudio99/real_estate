@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:real_estate/widgets/agent_items.dart';
 import 'package:real_estate/widgets/custom_textbox.dart';
+import 'package:real_estate/utils/globals.dart' as global;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -45,6 +46,7 @@ class _AgentsPageState extends State<AgentsPage> {
           };
           updatedPopulars.add(newItem);
         }
+        global.users = updatedPopulars;
         setState(() {
           agents = updatedPopulars;
         });

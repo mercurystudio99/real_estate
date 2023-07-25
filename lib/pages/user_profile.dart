@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:real_estate/theme/color.dart';
+import 'package:real_estate/utils/globals.dart' as global;
 
 class UserProfilePage extends StatefulWidget {
   @override
@@ -20,6 +21,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
   void initState() {
     if (mounted == true) {
       super.initState();
+      _fnameController.text = global.firstName;
+      _lnameController.text = global.lastName;
+      _emailController.text = global.email;
+      _phoneController.text = global.phone;
+      _addressController.text = global.location;
       configLoading();
     }
   }
@@ -78,10 +84,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.black,
-                    ),
+                    IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: Icon(
+                          Icons.arrow_back_ios,
+                          color: Colors.black,
+                        )),
                     Text(
                       'EDIT PROFILE',
                       style: TextStyle(color: Colors.grey, fontSize: 22),

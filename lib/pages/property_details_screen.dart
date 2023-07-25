@@ -320,7 +320,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             Text(
                               "Facilities",
                               style: TextStyle(
-                                fontSize: 15,
+                                fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -403,43 +403,56 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),
-        child: Row(children: [
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Expanded(
               child: Column(
                   children: evenIndexElements.map((facility) {
             return Builder(builder: (BuildContext context) {
-              return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                const Icon(Icons.build_outlined, size: 16),
-                const SizedBox(width: 10),
-                Text(
-                  facility["name"].toString(),
-                  style: TextStyle(fontSize: 15, color: AppColor.darker),
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  facility["distance"].toString(),
-                  style: TextStyle(fontSize: 15, color: AppColor.darker),
-                )
-              ]);
+              return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.location_city, size: 30),
+                        const SizedBox(width: 10),
+                        Text(
+                          facility["name"].toString(),
+                          style:
+                              TextStyle(fontSize: 16, color: AppColor.darker),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          facility["distance"].toString(),
+                          style:
+                              TextStyle(fontSize: 15, color: AppColor.darker),
+                        )
+                      ]));
             });
           }).toList())),
+          const SizedBox(width: 15),
           Expanded(
               child: Column(
                   children: oddIndexElements.map((facility) {
             return Builder(builder: (BuildContext context) {
-              return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                const Icon(Icons.build_outlined, size: 16),
-                const SizedBox(width: 10),
-                Text(
-                  facility["name"].toString(),
-                  style: TextStyle(fontSize: 15, color: AppColor.darker),
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  facility["distance"].toString(),
-                  style: TextStyle(fontSize: 15, color: AppColor.darker),
-                )
-              ]);
+              return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.location_city, size: 30),
+                        const SizedBox(width: 10),
+                        Text(
+                          facility["name"].toString(),
+                          style:
+                              TextStyle(fontSize: 16, color: AppColor.darker),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          facility["distance"].toString(),
+                          style:
+                              TextStyle(fontSize: 15, color: AppColor.darker),
+                        )
+                      ]));
             });
           }).toList()))
         ]),

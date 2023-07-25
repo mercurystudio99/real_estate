@@ -154,10 +154,18 @@ class _OTPPageState extends State<OTPPage> {
                     ),
                 onPressed: () {
                   _getOTPcode();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Dashboard()),
-                  );
+                  if (_otp == '1234') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const Dashboard()),
+                    );
+                  } else {
+                    // Show error message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Invalid OTP')),
+                    );
+                  }
                 },
                 child: const Text(
                   'NEXT',

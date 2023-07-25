@@ -14,6 +14,13 @@ class _LoginPageState extends State<LoginPage> {
 
   final _phoneController = TextEditingController();
 
+  String? _validatePhone(String value) {
+    if (value.isEmpty) {
+      return "\u26A0 Please enter your phone number";
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,27 +106,46 @@ class _LoginPageState extends State<LoginPage> {
                       const EdgeInsets.symmetric(vertical: 20, horizontal: 32),
                   child: Stack(
                     children: [
-                      Material(
-                          elevation: 8,
-                          shadowColor: Colors.black.withOpacity(0.5),
+                      Container(
+                        height: 60,
+                        decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(14)),
-                          child: TextFormField(
-                            controller: _phoneController,
-                            keyboardType: TextInputType.phone,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              fillColor: Colors.white,
-                              filled: true,
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(14)),
-                                  borderSide: BorderSide(color: Colors.white)),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(14)),
-                                  borderSide: BorderSide(color: Colors.white)),
-                            ),
-                          )),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 5,
+                                spreadRadius: 1),
+                          ],
+                        ),
+                      ),
+                      TextFormField(
+                        controller: _phoneController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(14)),
+                              borderSide: BorderSide(color: Colors.white)),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(14)),
+                              borderSide: BorderSide(color: Colors.white)),
+                          errorBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(14)),
+                              borderSide: BorderSide(color: Colors.red)),
+                          focusedErrorBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(14)),
+                              borderSide: BorderSide(color: Colors.red)),
+                        ),
+                        // The validator receives the text that the user has entered.
+                        validator: (value) {
+                          return _validatePhone(value!);
+                        },
+                      ),
                     ],
                   ),
                 ),
