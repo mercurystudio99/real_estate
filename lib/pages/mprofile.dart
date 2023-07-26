@@ -1,6 +1,7 @@
-import 'dart:convert';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:real_estate/utils/globals.dart' as global;
 import 'package:real_estate/theme/color.dart';
 import 'package:real_estate/utils/constants.dart';
@@ -15,6 +16,7 @@ class MProfilePage extends StatefulWidget {
 
 class _MProfilePageState extends State<MProfilePage> {
   late String id;
+  late String _memberType = '';
   late Map<String, dynamic> info = {
     'id': '',
     'image': '',
@@ -26,6 +28,7 @@ class _MProfilePageState extends State<MProfilePage> {
     'listings': '2',
   };
   static bool isDocument = false;
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
   void initState() {
@@ -40,6 +43,10 @@ class _MProfilePageState extends State<MProfilePage> {
         info['email'] = element['email'];
         info['phone'] = element['phone'];
       }
+    });
+    _prefs.then((SharedPreferences prefs) {
+      String? memberType = prefs.getString('membertype');
+      _memberType = memberType!;
     });
   }
 
@@ -133,13 +140,9 @@ class _MProfilePageState extends State<MProfilePage> {
                             ),
                           ),
                         ),
-                        Container(
+                        SizedBox(
                           height: 50,
                           width: 50,
-                          child: Icon(
-                            Icons.settings_outlined,
-                            color: Colors.white,
-                          ),
                         ),
                       ],
                     ),
@@ -217,7 +220,7 @@ class _MProfilePageState extends State<MProfilePage> {
                           TextStyle(fontSize: 34, color: Colors.grey.shade700),
                     ),
                     Text(
-                      'listings/portfolio',
+                      (_memberType == 'vendor') ? 'portfolio' : 'listings',
                       style:
                           TextStyle(fontSize: 13, color: Colors.grey.shade600),
                     ),
@@ -260,8 +263,8 @@ class _MProfilePageState extends State<MProfilePage> {
                             isDocument = false;
                           });
                         },
-                        child: const Text(
-                          'portfolio/listings',
+                        child: Text(
+                          (_memberType == 'vendor') ? 'portfolio' : 'listings',
                           softWrap: false,
                           maxLines: 1,
                           overflow: TextOverflow.clip,
@@ -316,8 +319,8 @@ class _MProfilePageState extends State<MProfilePage> {
                         size: 28,
                       ),
                       const SizedBox(width: 10),
-                      const Text(
-                        'Portfolio/listings',
+                      Text(
+                        (_memberType == 'vendor') ? 'portfolio' : 'listings',
                         style: TextStyle(color: Colors.grey, fontSize: 18),
                       )
                     ])),
