@@ -27,6 +27,7 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   flutter_slidable: ^3.0.0
   syncfusion_flutter_charts: ^19.1.54
+  shared_preferences: ^2.2.0
 
 
 dev_dependencies:

@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:real_estate/pages/otp.dart';
+import 'package:real_estate/pages/choose.dart';
 import 'package:real_estate/theme/color.dart';
 
 class LoginPage extends StatefulWidget {
@@ -14,11 +18,33 @@ class _LoginPageState extends State<LoginPage> {
 
   final _phoneController = TextEditingController();
 
+  // Obtain shared preferences.
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   String? _validatePhone(String value) {
     if (value.isEmpty) {
       return "\u26A0 Please enter your phone number";
     }
+    RegExp regExp = new RegExp(r'^(?:[+0][1-9])?[0-9]{10,12}$');
+    regExp.hasMatch(value);
+    if (!regExp.hasMatch(value)) {
+      return "\u26A0 Please enter a valid phone number";
+    }
     return null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _prefs.then((SharedPreferences prefs) {
+      String? memberType = prefs.getString('membertype');
+      if (memberType == null) {
+        Timer(
+            const Duration(seconds: 1),
+            () => Navigator.restorablePush<void>(
+                context, _fullscreenDialogRoute));
+      }
+    });
   }
 
   @override
@@ -120,6 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       TextFormField(
                         controller: _phoneController,
+                        keyboardType: TextInputType.phone,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           fillColor: Colors.white,
@@ -196,6 +223,16 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ],
       )),
+    );
+  }
+
+  static Route<void> _fullscreenDialogRoute(
+    BuildContext context,
+    Object? arguments,
+  ) {
+    return MaterialPageRoute<void>(
+      builder: (context) => ChoosePage(),
+      fullscreenDialog: true,
     );
   }
 }
