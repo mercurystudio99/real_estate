@@ -199,11 +199,23 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const OTPPage()),
-                            );
+                            _prefs.then((SharedPreferences prefs) {
+                              String? memberType =
+                                  prefs.getString('membertype');
+                              if (memberType == null) {
+                                // Show error message
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text('Choose a member type')),
+                                );
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const OTPPage()),
+                                );
+                              }
+                            });
                           }
                         },
                         child: const Text(

@@ -83,8 +83,7 @@ class _ChoosePageState extends State<ChoosePage> {
                     height: 100,
                     padding: const EdgeInsets.all(3),
                     decoration: BoxDecoration(
-                        color: Colors.black,
-                        border: Border.all(width: 4, color: Colors.red),
+                        border: Border.all(width: 1, color: Colors.black),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(100))),
                     child: ClipRRect(
@@ -119,8 +118,7 @@ class _ChoosePageState extends State<ChoosePage> {
                     height: 100,
                     padding: const EdgeInsets.all(3),
                     decoration: BoxDecoration(
-                        color: Colors.black,
-                        border: Border.all(width: 4, color: Colors.red),
+                        border: Border.all(width: 1, color: Colors.black),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(100))),
                     child: ClipRRect(
@@ -163,8 +161,7 @@ class _ChoosePageState extends State<ChoosePage> {
                     height: 100,
                     padding: const EdgeInsets.all(3),
                     decoration: BoxDecoration(
-                        color: Colors.black,
-                        border: Border.all(width: 4, color: Colors.red),
+                        border: Border.all(width: 1, color: Colors.black),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(100))),
                     child: ClipRRect(
