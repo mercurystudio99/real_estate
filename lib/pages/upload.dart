@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:real_estate/theme/color.dart';
+import 'package:real_estate/utils/globals.dart' as global;
 
 class UploadPage extends StatefulWidget {
   @override
@@ -20,6 +21,12 @@ class _UploadPageState extends State<UploadPage> {
     setState(() {
       imageList.add(img!);
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    imageList = global.imageList;
   }
 
   @override
@@ -132,7 +139,11 @@ class _UploadPageState extends State<UploadPage> {
                       padding: const EdgeInsets.all(
                           5) //content padding inside button
                       ),
-                  onPressed: () {},
+                  onPressed: () {
+                    global.imageList = imageList;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Success Saved!')));
+                  },
                   child: const Text(
                     'Save Draft',
                     style: TextStyle(color: Colors.grey, fontSize: 14.0),
@@ -149,7 +160,9 @@ class _UploadPageState extends State<UploadPage> {
                               borderRadius: BorderRadius.circular(100)),
                           shadowColor: Colors.black.withOpacity(0.4),
                           padding: const EdgeInsets.all(5)),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                       child: const Text(
                         'Post',
                         style: TextStyle(

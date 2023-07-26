@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:real_estate/pages/user_profile.dart';
 import 'package:real_estate/pages/feedback.dart';
 import 'package:real_estate/pages/policy.dart';
@@ -14,6 +15,9 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  late String _memberType = '';
+
   bool _notificationEnabled = false;
   bool _darkThemeEnabled = false;
   List<String> _themes = ['Light', 'Dark'];
@@ -24,6 +28,11 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
     _currentTheme = ThemeData.light();
+    _prefs.then((SharedPreferences prefs) {
+      String? memberType = prefs.getString('membertype');
+      _memberType = memberType!;
+      setState(() {});
+    });
   }
 
   void _toggleTheme(bool value) {
@@ -70,15 +79,16 @@ class _SettingsPageState extends State<SettingsPage> {
                 AppCommons.navigateToPage(context, NotificationPage());
               },
             ),
-            ListTile(
-              leading: Icon(Icons.upload_file),
-              title: Text('Upload'),
-              trailing: Icon(Icons.arrow_forward_ios_sharp),
-              onTap: () {
-                // Add reset settings logic here
-                AppCommons.navigateToPage(context, UploadPage());
-              },
-            ),
+            if (_memberType == 'vendor')
+              ListTile(
+                leading: Icon(Icons.upload_file),
+                title: Text('Upload'),
+                trailing: Icon(Icons.arrow_forward_ios_sharp),
+                onTap: () {
+                  // Add reset settings logic here
+                  AppCommons.navigateToPage(context, UploadPage());
+                },
+              ),
             ListTile(
               leading: Icon(Icons.brightness_6),
               title: Text('Dark Theme'),

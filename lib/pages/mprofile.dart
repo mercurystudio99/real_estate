@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,6 +48,7 @@ class _MProfilePageState extends State<MProfilePage> {
     _prefs.then((SharedPreferences prefs) {
       String? memberType = prefs.getString('membertype');
       _memberType = memberType!;
+      setState(() {});
     });
   }
 
@@ -333,37 +335,44 @@ class _MProfilePageState extends State<MProfilePage> {
 
   Widget _listing() {
     Size size = MediaQuery.of(context).size;
-    return Container(
-      width: size.width,
-      child: Column(children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                child: Image.network(
-                  'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
-                  width: size.width * 0.4,
-                  height: size.width * 0.4,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(width: 5),
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                child: Image.network(
-                  'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80',
-                  width: size.width * 0.4,
-                  height: size.width * 0.4,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ],
+
+    List<Widget> lists = global.imageList.map((item) {
+      return Container(
+          child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.file(
+            File(item.path),
+            fit: BoxFit.cover,
+            width: size.width * 0.25,
+            height: size.width * 0.25,
           ),
         ),
-      ]),
+      ));
+    }).toList();
+    int rowCount = lists.length ~/ 2;
+    List<Widget> rowList = [
+      Row(children: [const SizedBox(height: 10)]),
+    ];
+    for (int i = 0; i < rowCount + 1; i++) {
+      if (lists.length > 2 * (i + 1)) {
+        rowList.add(Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: lists.sublist(2 * i, 2 * (i + 1))));
+      } else {
+        rowList.add(Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: lists.sublist(2 * i, lists.length)));
+      }
+    }
+
+    return Container(
+      width: size.width,
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: rowList),
     );
   }
 
