@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:real_estate/widgets/custom_image.dart';
 import 'package:real_estate/widgets/hot_item.dart';
 import 'package:real_estate/widgets/custom_textbox.dart';
 import 'package:real_estate/theme/color.dart';
 import 'dart:convert';
+import 'dart:async';
 import 'package:http/http.dart' as http;
 
 class WishlistPage extends StatefulWidget {
@@ -14,6 +16,8 @@ class WishlistPage extends StatefulWidget {
 }
 
 class _WishlistPageState extends State<WishlistPage> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   List<Map<String, dynamic>> wishlist = [];
 
   @override
@@ -28,7 +32,7 @@ class _WishlistPageState extends State<WishlistPage> {
 
   Future<void> populateProperties() async {
     var url =
-        'https://properties-api.myspacetech.in/ver1/properties/recent'; // Replace with your actual API endpoint URL
+        'https://properties-api.myspacetech.in/ver1/properties'; // Replace with your actual API endpoint URL
 
     try {
       final response = await http.get(Uri.parse(url));
@@ -37,24 +41,32 @@ class _WishlistPageState extends State<WishlistPage> {
         final List<dynamic> properties = json.decode(response.body)["data"];
         List<Map<String, dynamic>> updatedPopulars = [];
 
-        for (var item in properties) {
-          final Map<String, dynamic> newItem = {
-            'id': item['id'].toString(),
-            'image': item['image'],
-            'name': item['title'],
-            'price': "\₹" + item['price'].toString(),
-            'location': (item['address'] ?? "") + ", " + item['location_name'],
-            'is_favorited': false,
-            'bed': item['bed'].toString(),
-            'bathroom': item['bathroom'].toString(),
-            'square': item['square'].toString(),
-            "days_since": item['days_since'].toString(),
-            'rooms': item['room'].toString(),
-          };
-          updatedPopulars.add(newItem);
-        }
-        setState(() {
-          wishlist = updatedPopulars;
+        _prefs.then((SharedPreferences prefs) {
+          List<String>? likes = prefs.getStringList('likes');
+          for (var item in properties) {
+            final Map<String, dynamic> newItem = {
+              'id': item['id'].toString(),
+              'image': item['image'],
+              'name': item['title'],
+              'price': "\₹" + item['price'].toString(),
+              'location':
+                  (item['address'] ?? "") + ", " + item['location_name'],
+              'is_favorited': false,
+              'bed': item['bed'].toString(),
+              'bathroom': item['bathroom'].toString(),
+              'square': item['square'].toString(),
+              "days_since": item['days_since'].toString(),
+              'rooms': item['room'].toString(),
+            };
+            if (likes != null) {
+              if (likes.contains(item['id'].toString())) {
+                updatedPopulars.add(newItem);
+              }
+            }
+          }
+          setState(() {
+            wishlist = updatedPopulars;
+          });
         });
       } else {
         // Handle API error
@@ -143,7 +155,9 @@ class _WishlistPageState extends State<WishlistPage> {
             const SizedBox(
               height: 20,
             ),
-            _buildHot(),
+            (wishlist.length > 0)
+                ? _buildHot()
+                : Center(child: Text('No favorites.')),
             const SizedBox(
               height: 20,
             ),

@@ -43,6 +43,7 @@ class _RootAppState extends State<RootApp> {
       "active_icon": Icons.density_small_sharp,
       "page": ExplorePage(
         listingType: "all",
+        independentLayout: false,
       ),
     },
     {

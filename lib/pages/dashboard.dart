@@ -96,7 +96,10 @@ class _DashboardState extends State<Dashboard> {
             },
             children: const [
               HomePage(),
-              ExplorePage(listingType: "all"),
+              ExplorePage(
+                listingType: "all",
+                independentLayout: false,
+              ),
               AgentsPage(),
               WishlistPage(),
               SettingsPage()

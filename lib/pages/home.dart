@@ -292,7 +292,7 @@ class _HomePageState extends State<HomePage> {
                   child: GestureDetector(
                     onTap: () {
                       // Navigate to another page here
-                      navigateToDetailPage(context, "spotlight");
+                      navigateToDetailPage(context, "all");
                     },
                     child: Text(
                       "See all",
@@ -324,7 +324,7 @@ class _HomePageState extends State<HomePage> {
                   child: GestureDetector(
                     onTap: () {
                       // Navigate to another page here
-                      navigateToDetailPage(context, "trending");
+                      navigateToDetailPage(context, "all");
                     },
                     child: Text(
                       "See all",
@@ -356,7 +356,7 @@ class _HomePageState extends State<HomePage> {
                   child: GestureDetector(
                     onTap: () {
                       // Navigate to another page here
-                      navigateToDetailPage(context, "hot");
+                      navigateToDetailPage(context, "all");
                     },
                     child: Text(
                       "See all",
@@ -383,7 +383,10 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ExplorePage(listingType: filter),
+        builder: (context) => ExplorePage(
+          listingType: filter,
+          independentLayout: true,
+        ),
       ),
     );
   }

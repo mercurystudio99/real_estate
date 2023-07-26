@@ -25,6 +25,7 @@ void main() {
       '/home': (context) => const HomePage(),
       '/listings': (context) => const ExplorePage(
             listingType: "all",
+            independentLayout: false,
           ),
       '/agents': (context) => const AgentsPage(),
       '/cart': (context) => const HomePage(),

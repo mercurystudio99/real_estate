@@ -11,7 +11,10 @@ import 'package:http/http.dart' as http;
 
 class ExplorePage extends StatefulWidget {
   final String listingType;
-  const ExplorePage({Key? key, required this.listingType}) : super(key: key);
+  final bool independentLayout;
+  const ExplorePage(
+      {Key? key, required this.listingType, required this.independentLayout})
+      : super(key: key);
 
   @override
   _ExplorePageState createState() => _ExplorePageState();
@@ -31,8 +34,13 @@ class _ExplorePageState extends State<ExplorePage> {
   }
 
   Future<void> populateListings() async {
-    var url =
-        'https://properties-api.myspacetech.in/ver1/properties'; // Replace with your actual API endpoint URL
+    var url = '';
+    if (widget.listingType == 'all') {
+      url = 'https://properties-api.myspacetech.in/ver1/properties';
+    } else {
+      url = 'https://properties-api.myspacetech.in/ver1/properties/' +
+          widget.listingType;
+    }
 
     try {
       final response = await http.get(Uri.parse(url));
@@ -60,32 +68,49 @@ class _ExplorePageState extends State<ExplorePage> {
           listings = updatedPopulars;
         });
       } else {
-        AppCommons.showErrorPopup(context,
-            'Failed to retrieve data from the API. Status code: ${response.statusCode}');
+        // AppCommons.showErrorPopup(context,
+        //     'Failed to retrieve data from the API. Status code: ${response.statusCode}');
       }
     } catch (error) {
-      AppCommons.showErrorPopup(
-          context, 'Error occurred while fetching data: $error');
+      // AppCommons.showErrorPopup(
+      //     context, 'Error occurred while fetching data: $error');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: _refreshPage,
-      child: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            backgroundColor: AppColor.appBgColor,
-            pinned: true,
-            snap: true,
-            floating: true,
-            title: _buildHeader(),
-          ),
-          SliverToBoxAdapter(child: _buildBody())
-        ],
-      ),
-    );
+    return widget.independentLayout
+        ? Scaffold(
+            body: RefreshIndicator(
+            onRefresh: _refreshPage,
+            child: CustomScrollView(
+              slivers: <Widget>[
+                SliverAppBar(
+                  backgroundColor: AppColor.appBgColor,
+                  pinned: true,
+                  snap: true,
+                  floating: true,
+                  title: _buildHeader(),
+                ),
+                SliverToBoxAdapter(child: _buildBody())
+              ],
+            ),
+          ))
+        : RefreshIndicator(
+            onRefresh: _refreshPage,
+            child: CustomScrollView(
+              slivers: <Widget>[
+                SliverAppBar(
+                  backgroundColor: AppColor.appBgColor,
+                  pinned: true,
+                  snap: true,
+                  floating: true,
+                  title: _buildHeader(),
+                ),
+                SliverToBoxAdapter(child: _buildBody())
+              ],
+            ),
+          );
   }
 
   _buildHeader() {
@@ -100,47 +125,49 @@ class _ExplorePageState extends State<ExplorePage> {
         const SizedBox(
           width: 10,
         ),
-        IconBox(
-          child: Icon(Icons.filter_list_rounded, color: Colors.white),
-          bgColor: AppColor.secondary,
-          radius: 10,
-        )
+        const SizedBox(width: 50)
+        // IconBox(
+        //   child: Icon(Icons.filter_list_rounded, color: Colors.white),
+        //   bgColor: AppColor.secondary,
+        //   radius: 10,
+        // )
       ],
     );
   }
 
   _buildBody() {
     return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 20,
-          ),
-          const Padding(
-            padding: EdgeInsets.only(left: 15),
-            child: Text(
-              "Agencies",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          _buildCompanies(),
-          const SizedBox(
-            height: 20,
-          ),
-          _buildBrokers(),
-          const SizedBox(
-            height: 100,
-          ),
-        ],
-      ),
-    );
+        child: Container(
+            color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 20,
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(left: 15),
+                  child: Text(
+                    "Agencies",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                _buildCompanies(),
+                const SizedBox(
+                  height: 20,
+                ),
+                _buildBrokers(),
+                const SizedBox(
+                  height: 100,
+                ),
+              ],
+            )));
   }
 
   int _selectedCategory = 0;

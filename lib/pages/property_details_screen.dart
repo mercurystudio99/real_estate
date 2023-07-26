@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'dart:async';
+
 import 'package:http/http.dart' as http;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:real_estate/utils/common.dart';
 import 'package:real_estate/theme/color.dart';
-import 'package:real_estate/pages/details/components/custom_app_bar.dart';
+import 'package:real_estate/utils/constants.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:real_estate/widgets/custom_image.dart';
@@ -20,16 +23,45 @@ class DetailsScreen extends StatefulWidget {
 
 class _DetailsScreenState extends State<DetailsScreen> {
   late String id;
+  late bool isLike = false;
   bool imagesLoaded = false;
   List<Map<String, dynamic>> imageList = [];
   List<Map<String, dynamic>> populars = [];
   List<Map<String, dynamic>> facilities = [];
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
   void initState() {
     super.initState();
     id = widget.propertyId;
     populatePopulars(id);
+    _prefs.then((SharedPreferences prefs) {
+      List<String>? likes = prefs.getStringList('likes');
+      if (likes != null) {
+        likes.forEach((element) {
+          if (element == id) {
+            isLike = true;
+          }
+        });
+      }
+    });
+  }
+
+  Future<void> _setFavorite() async {
+    final SharedPreferences prefs = await _prefs;
+    List<String>? likes = prefs.getStringList('likes');
+    if (likes == null) {
+      likes = [];
+    }
+    if (isLike) {
+      likes.remove(id);
+    } else {
+      likes.add(id);
+    }
+    prefs.setStringList('likes', likes).then((bool success) {
+      isLike = !isLike;
+      setState(() {});
+    });
   }
 
   Future<void> populatePopulars(String propId) async {
@@ -110,7 +142,46 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 Stack(
                   children: [
                     _buildFeaturedImages(),
-                    CustomAppBar(),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: appPadding,
+                        right: appPadding,
+                        top: appPadding,
+                      ),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                height: 50,
+                                width: 50,
+                                child: Icon(
+                                  Icons.arrow_back_ios_new,
+                                  color: white,
+                                ),
+                              ),
+                            ),
+                            InkWell(
+                                onTap: _setFavorite,
+                                child: Container(
+                                  height: 50,
+                                  width: 50,
+                                  child: Icon(
+                                    isLike
+                                        ? Icons.favorite_rounded
+                                        : Icons.favorite_border_rounded,
+                                    color: white,
+                                  ),
+                                ))
+                          ],
+                        ),
+                      ),
+                    ),
                     _buildFeaturedThumbnails(),
                   ],
                 ),
