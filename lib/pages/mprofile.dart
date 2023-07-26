@@ -45,6 +45,7 @@ class _MProfilePageState extends State<MProfilePage> {
         info['phone'] = element['phone'];
       }
     });
+    info['listings'] = global.imageList.length.toString();
     _prefs.then((SharedPreferences prefs) {
       String? memberType = prefs.getString('membertype');
       _memberType = memberType!;
