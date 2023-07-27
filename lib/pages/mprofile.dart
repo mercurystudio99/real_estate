@@ -47,8 +47,16 @@ class _MProfilePageState extends State<MProfilePage> {
     });
     info['listings'] = global.imageList.length.toString();
     _prefs.then((SharedPreferences prefs) {
-      String? memberType = prefs.getString('membertype');
-      _memberType = memberType!;
+      List<String>? memberTypes = prefs.getStringList('membertypes');
+      if (memberTypes == null) {
+        memberTypes = [];
+      }
+      memberTypes.forEach((element) {
+        List<String> info = element.split('_');
+        if (info[0] == global.phone) {
+          _memberType = info[1];
+        }
+      });
       setState(() {});
     });
   }

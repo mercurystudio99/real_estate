@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:real_estate/pages/otp.dart';
-import 'package:real_estate/pages/choose.dart';
 import 'package:real_estate/theme/color.dart';
+import 'package:real_estate/utils/globals.dart' as global;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
     if (value.isEmpty) {
       return "\u26A0 Please enter your phone number";
     }
-    RegExp regExp = new RegExp(r'^(?:[+0][1-9])?[0-9]{10,12}$');
+    RegExp regExp = new RegExp(r'^(?:[+0][1-9])?[0-9]{9,10}$');
     regExp.hasMatch(value);
     if (!regExp.hasMatch(value)) {
       return "\u26A0 Please enter a valid phone number";
@@ -36,15 +36,10 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _prefs.then((SharedPreferences prefs) {
-      String? memberType = prefs.getString('membertype');
-      if (memberType == null) {
-        Timer(
-            const Duration(seconds: 1),
-            () => Navigator.restorablePush<void>(
-                context, _fullscreenDialogRoute));
-      }
-    });
+    // Timer(
+    //     const Duration(seconds: 1),
+    //     () => Navigator.restorablePush<void>(
+    //         context, _fullscreenDialogRoute));
   }
 
   @override
@@ -148,6 +143,14 @@ class _LoginPageState extends State<LoginPage> {
                         controller: _phoneController,
                         keyboardType: TextInputType.phone,
                         decoration: const InputDecoration(
+                          prefixIcon: Padding(
+                            padding: const EdgeInsetsDirectional.only(
+                                start: 12.5, top: 12.5),
+                            child: Text(
+                              '+91',
+                              style: TextStyle(fontSize: 17),
+                            ),
+                          ),
                           border: OutlineInputBorder(),
                           fillColor: Colors.white,
                           filled: true,
@@ -200,21 +203,31 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             _prefs.then((SharedPreferences prefs) {
-                              String? memberType =
-                                  prefs.getString('membertype');
-                              if (memberType == null) {
-                                // Show error message
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text('Choose a member type')),
-                                );
-                              } else {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const OTPPage()),
-                                );
+                              List<String>? memberTypes =
+                                  prefs.getStringList('membertypes');
+                              if (memberTypes == null) {
+                                memberTypes = [];
                               }
+                              bool isExist = false;
+                              memberTypes.forEach((element) {
+                                List<String> info = element.split('_');
+                                if (info[0] == _phoneController.text.trim()) {
+                                  isExist = true;
+                                }
+                              });
+                              if (!isExist) {
+                                memberTypes.add(_phoneController.text.trim());
+                              }
+                              prefs
+                                  .setStringList('membertypes', memberTypes)
+                                  .then((bool success) {
+                                global.phone = _phoneController.text.trim();
+                              });
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const OTPPage()),
+                              );
                             });
                           }
                         },
@@ -238,13 +251,13 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  static Route<void> _fullscreenDialogRoute(
-    BuildContext context,
-    Object? arguments,
-  ) {
-    return MaterialPageRoute<void>(
-      builder: (context) => ChoosePage(),
-      fullscreenDialog: true,
-    );
-  }
+  // static Route<void> _fullscreenDialogRoute(
+  //   BuildContext context,
+  //   Object? arguments,
+  // ) {
+  //   return MaterialPageRoute<void>(
+  //     builder: (context) => ChoosePage(),
+  //     fullscreenDialog: true,
+  //   );
+  // }
 }

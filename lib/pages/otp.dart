@@ -1,6 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:real_estate/pages/choose.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:real_estate/pages/dashboard.dart';
 import 'package:real_estate/theme/color.dart';
+import 'package:real_estate/utils/globals.dart' as global;
 
 class OTPPage extends StatefulWidget {
   const OTPPage({Key? key}) : super(key: key);
@@ -19,6 +23,8 @@ class _OTPPageState extends State<OTPPage> {
   final FocusNode _focusTwo = FocusNode();
   final FocusNode _focusThree = FocusNode();
   final FocusNode _focusFour = FocusNode();
+
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   // This is the entered code
   // It will be displayed in a Text widget
@@ -155,11 +161,35 @@ class _OTPPageState extends State<OTPPage> {
                 onPressed: () {
                   _getOTPcode();
                   if (_otp == '1234') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const Dashboard()),
-                    );
+                    _prefs.then((SharedPreferences prefs) {
+                      List<String>? memberTypes =
+                          prefs.getStringList('membertypes');
+                      if (memberTypes == null) {
+                        memberTypes = [];
+                      }
+                      bool isExist = false;
+                      memberTypes.forEach((element) {
+                        List<String> info = element.split('_');
+                        if (info[0] == global.phone) {
+                          if (info.length > 1) {
+                            isExist = true;
+                          }
+                        }
+                      });
+                      if (isExist) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Dashboard()),
+                        );
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ChoosePage()),
+                        );
+                      }
+                    });
                   } else {
                     // Show error message
                     ScaffoldMessenger.of(context).showSnackBar(

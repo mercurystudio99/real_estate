@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:real_estate/theme/color.dart';
+import 'package:real_estate/pages/dashboard.dart';
+import 'package:real_estate/utils/globals.dart' as global;
 
 class ChoosePage extends StatefulWidget {
   const ChoosePage({Key? key}) : super(key: key);
@@ -17,18 +19,25 @@ class _ChoosePageState extends State<ChoosePage> {
 
   Future<void> _setMemberType() async {
     final SharedPreferences prefs = await _prefs;
-    prefs.setString('membertype', _memberType).then((bool success) {
-      return true;
+    List<String>? memberTypes = prefs.getStringList('membertypes');
+    if (memberTypes == null) {
+      memberTypes = [];
+    }
+    List<String> result = [];
+    memberTypes.forEach((element) {
+      List<String> info = element.split('_');
+      if (info[0] == global.phone) {
+        result.add(global.phone + '_' + _memberType);
+      } else {
+        result.add(element);
+      }
     });
+    prefs.setStringList('membertypes', result).then((bool success) {});
   }
 
   @override
   void initState() {
     super.initState();
-    _prefs.then((SharedPreferences prefs) {
-      String? memberType = prefs.getString('membertype');
-      if (memberType == null) {}
-    });
   }
 
   @override
@@ -205,8 +214,11 @@ class _ChoosePageState extends State<ChoosePage> {
                         const EdgeInsets.all(5) //content padding inside button
                     ),
                 onPressed: () {
-                  Navigator.pop(context);
                   _setMemberType();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Dashboard()),
+                  );
                 },
                 child: const Text(
                   'NEXT',

@@ -7,6 +7,7 @@ import 'package:real_estate/pages/emi.dart';
 import 'package:real_estate/pages/notification.dart';
 import 'package:real_estate/pages/upload.dart';
 import 'package:real_estate/utils/common.dart';
+import 'package:real_estate/utils/globals.dart' as global;
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -29,8 +30,16 @@ class _SettingsPageState extends State<SettingsPage> {
     super.initState();
     _currentTheme = ThemeData.light();
     _prefs.then((SharedPreferences prefs) {
-      String? memberType = prefs.getString('membertype');
-      _memberType = memberType!;
+      List<String>? memberTypes = prefs.getStringList('membertypes');
+      if (memberTypes == null) {
+        memberTypes = [];
+      }
+      memberTypes.forEach((element) {
+        List<String> info = element.split('_');
+        if (info[0] == global.phone) {
+          _memberType = info[1];
+        }
+      });
       setState(() {});
     });
   }
