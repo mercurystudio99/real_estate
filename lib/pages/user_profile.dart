@@ -1,6 +1,9 @@
 import 'dart:io';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:real_estate/theme/color.dart';
 import 'package:real_estate/utils/globals.dart' as global;
@@ -16,6 +19,28 @@ class _UserProfilePageState extends State<UserProfilePage> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
+
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+  Future<void> _changePhone() async {
+    final SharedPreferences prefs = await _prefs;
+    List<String>? memberTypes = prefs.getStringList('membertypes');
+    if (memberTypes == null) {
+      memberTypes = [];
+    }
+    List<String> result = [];
+    memberTypes.forEach((element) {
+      List<String> info = element.split('_');
+      if (info[0] == global.phone) {
+        result.add(_phoneController.text.trim() + '_' + info[1]);
+      } else {
+        result.add(element);
+      }
+    });
+    prefs.setStringList('membertypes', result).then((bool success) {
+      global.phone = _phoneController.text.trim();
+    });
+  }
 
   @override
   void initState() {
@@ -94,10 +119,20 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       'EDIT PROFILE',
                       style: TextStyle(color: Colors.grey, fontSize: 22),
                     ),
-                    Icon(
-                      Icons.check,
-                      color: Colors.black,
-                    )
+                    IconButton(
+                        onPressed: () {
+                          global.firstName = _fnameController.text.trim();
+                          global.lastName = _lnameController.text.trim();
+                          global.location = _addressController.text.trim();
+                          global.email = _emailController.text.trim();
+                          _changePhone();
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: const Text('Successfully updated!')));
+                        },
+                        icon: Icon(
+                          Icons.check,
+                          color: Colors.black,
+                        ))
                   ]),
             ),
             const SizedBox(height: 15),
@@ -289,6 +324,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   controller: _phoneController,
                   textInputAction: TextInputAction.next,
                   textCapitalization: TextCapitalization.words,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     suffixIcon: Icon(
                       Icons.check,
@@ -327,6 +363,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 child: TextField(
                   controller: _emailController,
                   textCapitalization: TextCapitalization.words,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     suffixIcon: Icon(
                       Icons.check,

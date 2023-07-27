@@ -141,7 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       TextFormField(
                         controller: _phoneController,
-                        keyboardType: TextInputType.phone,
+                        keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
                           prefixIcon: Padding(
                             padding: const EdgeInsetsDirectional.only(
