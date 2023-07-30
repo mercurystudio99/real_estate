@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:real_estate/theme/color.dart';
+import 'package:real_estate/utils/globals.dart' as global;
 
 class PolicyPage extends StatefulWidget {
   @override
@@ -56,69 +57,75 @@ class _PolicyPageState extends State<PolicyPage> {
           ),
         ],
       )),
-      Container(
-        width: MediaQuery.of(context).size.width,
-        height: 120,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Colors.white24, Colors.white60, Colors.white],
-                stops: [0, 0.1, 0.3])),
-        child: Column(children: [
-          const SizedBox(
-            height: 30,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                    child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColor.primary,
-                      elevation: 10,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5)),
-                      shadowColor: Colors.black.withOpacity(0.4),
-                      padding: const EdgeInsets.all(5)),
-                  onPressed: () {},
-                  child: const Text(
-                    'I accept',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0),
-                  ),
-                )),
-                const SizedBox(width: 20),
-                Expanded(
-                    child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColor.primary.withOpacity(0.05),
-                      elevation: 10, //elevation of button
-                      shape: RoundedRectangleBorder(
-                          //to set border radius to button
-                          borderRadius: BorderRadius.circular(5)),
-                      shadowColor: Colors.transparent,
-                      padding: const EdgeInsets.all(
-                          5) //content padding inside button
-                      ),
-                  onPressed: () {},
-                  child: const Text(
-                    'I decline',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0),
-                  ),
-                ))
-              ],
+      if (!global.policyAgree)
+        Container(
+          width: MediaQuery.of(context).size.width,
+          height: 120,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.white24, Colors.white60, Colors.white],
+                  stops: [0, 0.1, 0.3])),
+          child: Column(children: [
+            const SizedBox(
+              height: 30,
             ),
-          ),
-        ]),
-      )
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                      child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColor.primary,
+                        elevation: 10,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5)),
+                        shadowColor: Colors.black.withOpacity(0.4),
+                        padding: const EdgeInsets.all(5)),
+                    onPressed: () {
+                      global.policyAgree = true;
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      'I accept',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0),
+                    ),
+                  )),
+                  const SizedBox(width: 20),
+                  Expanded(
+                      child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColor.primary.withOpacity(0.05),
+                        elevation: 10, //elevation of button
+                        shape: RoundedRectangleBorder(
+                            //to set border radius to button
+                            borderRadius: BorderRadius.circular(5)),
+                        shadowColor: Colors.transparent,
+                        padding: const EdgeInsets.all(
+                            5) //content padding inside button
+                        ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      'I decline',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0),
+                    ),
+                  ))
+                ],
+              ),
+            ),
+          ]),
+        )
     ]));
   }
 }
