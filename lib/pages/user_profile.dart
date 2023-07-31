@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:async';
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,6 +40,45 @@ class _UserProfilePageState extends State<UserProfilePage> {
     prefs.setStringList('membertypes', result).then((bool success) {
       global.phone = _phoneController.text.trim();
     });
+  }
+
+  Future<void> _updateProfile() async {
+    Map<String, String> formData = {
+      "first_name": _fnameController.text.trim(),
+      "last_name": _lnameController.text.trim(),
+      "email": _emailController.text.trim(),
+      "location": _addressController.text.trim(),
+      "phone": _phoneController.text.trim(),
+    };
+
+    final response = await http.post(
+        Uri.parse('https://properties-api.myspacetech.in/ver1/updateuser/'),
+        body: formData);
+  }
+
+  String _validate() {
+    if (_fnameController.text.trim().isEmpty) {
+      return "Please enter your first name";
+    }
+    if (_lnameController.text.trim().isEmpty) {
+      return "Please enter your last name";
+    }
+    if (_emailController.text.trim().isEmpty) {
+      return "Please enter your email";
+    }
+    if (_addressController.text.trim().isEmpty) {
+      return "Please enter your location";
+    }
+
+    if (_phoneController.text.trim().isEmpty) {
+      return "Please enter your phone number";
+    }
+    RegExp regExp = new RegExp(r'^(?:[+0][1-9])?[0-9]{9,10}$');
+    regExp.hasMatch(_phoneController.text.trim());
+    if (!regExp.hasMatch(_phoneController.text.trim())) {
+      return "Please enter a valid phone number";
+    }
+    return 'success';
   }
 
   @override
@@ -121,11 +160,17 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     ),
                     IconButton(
                         onPressed: () {
+                          if (_validate() != 'success') {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(_validate())));
+                            return;
+                          }
                           global.firstName = _fnameController.text.trim();
                           global.lastName = _lnameController.text.trim();
                           global.location = _addressController.text.trim();
                           global.email = _emailController.text.trim();
                           _changePhone();
+                          _updateProfile();
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: const Text('Successfully updated!')));
                         },

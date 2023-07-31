@@ -1,5 +1,7 @@
 import 'dart:async';
-
+import 'dart:convert';
+import 'dart:math';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:real_estate/pages/otp.dart';
@@ -20,6 +22,8 @@ class _LoginPageState extends State<LoginPage> {
 
   // Obtain shared preferences.
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  List<Map<String, dynamic>> agents = [];
+  bool isExistUser = false;
 
   String? _validatePhone(String value) {
     if (value.isEmpty) {
@@ -36,10 +40,75 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    populateAgents();
     // Timer(
     //     const Duration(seconds: 1),
     //     () => Navigator.restorablePush<void>(
     //         context, _fullscreenDialogRoute));
+  }
+
+  Future<int> _checkUser() async {
+    isExistUser = false;
+    agents.forEach((element) {
+      if (element['phone'] == _phoneController.text.trim()) {
+        isExistUser = true;
+      }
+    });
+    if (!isExistUser) {
+      Map<String, String> formData = {
+        "first_name": "user",
+        "last_name": "user",
+        "email": "${Random().nextInt(10000).toString()}@example.com",
+        "password": "",
+        "address": "",
+        "phone": _phoneController.text.trim(),
+        "birthday": "",
+        "city": "",
+        "state": "",
+        "country": "",
+        "user_name": Random().nextInt(10000).toString()
+      };
+
+      final response = await http.post(
+          Uri.parse('https://properties-api.myspacetech.in/ver1/register/'),
+          body: formData);
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+
+  Future<void> populateAgents() async {
+    var url =
+        'https://properties-api.myspacetech.in/ver1/users'; // Replace with your actual API endpoint URL
+
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> properties = json.decode(response.body)["data"];
+        List<Map<String, dynamic>> updatedPopulars = [];
+        for (var item in properties) {
+          final Map<String, dynamic> newItem = {
+            'id': item['id'].toString(),
+            'image': item['image'],
+            'name': item['name'],
+            'email': item['email'],
+            'phone': item['phone'].toString(),
+          };
+          updatedPopulars.add(newItem);
+          debugPrint('${item['phone']}');
+        }
+        global.users = updatedPopulars;
+        setState(() {
+          agents = updatedPopulars;
+        });
+      } else {
+        // Handle API error
+      }
+    } catch (error) {
+      // Handle error
+    }
   }
 
   @override
@@ -200,8 +269,9 @@ class _LoginPageState extends State<LoginPage> {
                             padding: const EdgeInsets.all(
                                 5) //content padding inside button
                             ),
-                        onPressed: () {
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
+                            var result = await _checkUser();
                             _prefs.then((SharedPreferences prefs) {
                               List<String>? memberTypes =
                                   prefs.getStringList('membertypes');
