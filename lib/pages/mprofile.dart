@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:real_estate/utils/globals.dart' as global;
 import 'package:real_estate/theme/color.dart';
 import 'package:real_estate/utils/constants.dart';
@@ -29,7 +28,6 @@ class _MProfilePageState extends State<MProfilePage> {
     'listings': '2',
   };
   static bool isDocument = false;
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
   void initState() {
@@ -46,19 +44,7 @@ class _MProfilePageState extends State<MProfilePage> {
       }
     });
     info['listings'] = global.imageList.length.toString();
-    _prefs.then((SharedPreferences prefs) {
-      List<String>? memberTypes = prefs.getStringList('membertypes');
-      if (memberTypes == null) {
-        memberTypes = [];
-      }
-      memberTypes.forEach((element) {
-        List<String> info = element.split('_');
-        if (info[0] == global.phone) {
-          _memberType = info[1];
-        }
-      });
-      setState(() {});
-    });
+    _memberType = global.category;
   }
 
   // Future<void> _refreshPage() async {

@@ -1,7 +1,6 @@
-import 'dart:async';
+import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:real_estate/theme/color.dart';
 import 'package:real_estate/pages/dashboard.dart';
 import 'package:real_estate/utils/globals.dart' as global;
@@ -14,25 +13,18 @@ class ChoosePage extends StatefulWidget {
 }
 
 class _ChoosePageState extends State<ChoosePage> {
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late String _memberType = '';
 
   Future<void> _setMemberType() async {
-    final SharedPreferences prefs = await _prefs;
-    List<String>? memberTypes = prefs.getStringList('membertypes');
-    if (memberTypes == null) {
-      memberTypes = [];
-    }
-    List<String> result = [];
-    memberTypes.forEach((element) {
-      List<String> info = element.split('_');
-      if (info[0] == global.phone) {
-        result.add(global.phone + '_' + _memberType);
-      } else {
-        result.add(element);
-      }
-    });
-    prefs.setStringList('membertypes', result).then((bool success) {});
+    Map<String, String> formData = {
+      "phone": global.phone,
+      "category": _memberType,
+    };
+
+    final response = await http.post(
+        Uri.parse(
+            'https://properties-api.myspacetech.in/ver1/setusercategory/'),
+        body: formData);
   }
 
   @override

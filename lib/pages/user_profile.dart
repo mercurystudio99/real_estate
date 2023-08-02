@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:real_estate/theme/color.dart';
 import 'package:real_estate/utils/globals.dart' as global;
@@ -20,27 +20,33 @@ class _UserProfilePageState extends State<UserProfilePage> {
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
 
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  bool _fnamestate = false;
+  bool _lnamestate = false;
+  bool _emailstate = false;
+  bool _phonestate = false;
+  bool _addressstate = false;
 
-  Future<void> _changePhone() async {
-    final SharedPreferences prefs = await _prefs;
-    List<String>? memberTypes = prefs.getStringList('membertypes');
-    if (memberTypes == null) {
-      memberTypes = [];
-    }
-    List<String> result = [];
-    memberTypes.forEach((element) {
-      List<String> info = element.split('_');
-      if (info[0] == global.phone) {
-        result.add(_phoneController.text.trim() + '_' + info[1]);
-      } else {
-        result.add(element);
-      }
-    });
-    prefs.setStringList('membertypes', result).then((bool success) {
-      global.phone = _phoneController.text.trim();
-    });
-  }
+  // final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+  // Future<void> _changePhone() async {
+  //   final SharedPreferences prefs = await _prefs;
+  //   List<String>? memberTypes = prefs.getStringList('membertypes');
+  //   if (memberTypes == null) {
+  //     memberTypes = [];
+  //   }
+  //   List<String> result = [];
+  //   memberTypes.forEach((element) {
+  //     List<String> info = element.split('_');
+  //     if (info[0] == global.phone) {
+  //       result.add(_phoneController.text.trim() + '_' + info[1]);
+  //     } else {
+  //       result.add(element);
+  //     }
+  //   });
+  //   prefs.setStringList('membertypes', result).then((bool success) {
+  //     global.phone = _phoneController.text.trim();
+  //   });
+  // }
 
   Future<void> _updateProfile() async {
     Map<String, String> formData = {
@@ -63,9 +69,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
     if (_lnameController.text.trim().isEmpty) {
       return "Please enter your last name";
     }
-    if (_emailController.text.trim().isEmpty) {
-      return "Please enter your email";
-    }
     if (_addressController.text.trim().isEmpty) {
       return "Please enter your location";
     }
@@ -77,6 +80,18 @@ class _UserProfilePageState extends State<UserProfilePage> {
     regExp.hasMatch(_phoneController.text.trim());
     if (!regExp.hasMatch(_phoneController.text.trim())) {
       return "Please enter a valid phone number";
+    }
+    if (_emailController.text.trim().isEmpty) {
+      return "Please enter your email";
+    }
+    bool emailExist = false;
+    global.users.forEach((element) {
+      if (element['email'] == _emailController.text.trim()) {
+        emailExist = true;
+      }
+    });
+    if (emailExist) {
+      return "Please enter another email";
     }
     return 'success';
   }
@@ -90,6 +105,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
       _emailController.text = global.email;
       _phoneController.text = global.phone;
       _addressController.text = global.location;
+      if (global.firstName.length > 0) _fnamestate = true;
+      if (global.lastName.length > 0) _lnamestate = true;
+      if (global.email.length > 0) _emailstate = true;
+      if (global.phone.length > 0) _phonestate = true;
+      if (global.location.length > 0) _addressstate = true;
       configLoading();
     }
   }
@@ -169,7 +189,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           global.lastName = _lnameController.text.trim();
                           global.location = _addressController.text.trim();
                           global.email = _emailController.text.trim();
-                          _changePhone();
+                          global.phone = _phoneController.text.trim();
+                          // _changePhone();
                           _updateProfile();
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: const Text('Successfully updated!')));
@@ -253,10 +274,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   textInputAction: TextInputAction.next,
                   textCapitalization: TextCapitalization.words,
                   decoration: InputDecoration(
-                    suffixIcon: Icon(
-                      Icons.check,
-                      color: AppColor.green,
-                    ),
+                    suffixIcon: _fnamestate
+                        ? Icon(
+                            Icons.check,
+                            color: AppColor.green,
+                          )
+                        : Icon(
+                            Icons.close,
+                            color: AppColor.red,
+                          ),
                     floatingLabelBehavior: FloatingLabelBehavior.auto,
                     filled: true,
                     fillColor: Colors.white,
@@ -273,6 +299,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                  onChanged: (value) {
+                    if (value.isEmpty) {
+                      _fnamestate = false;
+                    } else {
+                      _fnamestate = true;
+                    }
+                    setState(() {});
+                  },
                 ),
               ),
             ),
@@ -292,10 +326,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   textInputAction: TextInputAction.next,
                   textCapitalization: TextCapitalization.words,
                   decoration: InputDecoration(
-                    suffixIcon: Icon(
-                      Icons.check,
-                      color: AppColor.green,
-                    ),
+                    suffixIcon: _lnamestate
+                        ? Icon(
+                            Icons.check,
+                            color: AppColor.green,
+                          )
+                        : Icon(
+                            Icons.close,
+                            color: AppColor.red,
+                          ),
                     floatingLabelBehavior: FloatingLabelBehavior.auto,
                     filled: true,
                     fillColor: Colors.white,
@@ -312,6 +351,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                  onChanged: (value) {
+                    if (value.isEmpty) {
+                      _lnamestate = false;
+                    } else {
+                      _lnamestate = true;
+                    }
+                    setState(() {});
+                  },
                 ),
               ),
             ),
@@ -331,10 +378,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   textInputAction: TextInputAction.next,
                   textCapitalization: TextCapitalization.words,
                   decoration: InputDecoration(
-                    suffixIcon: Icon(
-                      Icons.check,
-                      color: AppColor.green,
-                    ),
+                    suffixIcon: _addressstate
+                        ? Icon(
+                            Icons.check,
+                            color: AppColor.green,
+                          )
+                        : Icon(
+                            Icons.close,
+                            color: AppColor.red,
+                          ),
                     floatingLabelBehavior: FloatingLabelBehavior.auto,
                     filled: true,
                     fillColor: Colors.white,
@@ -351,6 +403,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                  onChanged: (value) {
+                    if (value.isEmpty) {
+                      _addressstate = false;
+                    } else {
+                      _addressstate = true;
+                    }
+                    setState(() {});
+                  },
                 ),
               ),
             ),
@@ -371,10 +431,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   textCapitalization: TextCapitalization.words,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    suffixIcon: Icon(
-                      Icons.check,
-                      color: AppColor.green,
-                    ),
+                    suffixIcon: _phonestate
+                        ? Icon(
+                            Icons.check,
+                            color: AppColor.green,
+                          )
+                        : Icon(
+                            Icons.close,
+                            color: AppColor.red,
+                          ),
                     floatingLabelBehavior: FloatingLabelBehavior.auto,
                     filled: true,
                     fillColor: Colors.white,
@@ -391,6 +456,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                  onChanged: (value) {
+                    if (value.isEmpty) {
+                      _phonestate = false;
+                    } else {
+                      _phonestate = true;
+                    }
+                    setState(() {});
+                  },
                 ),
               ),
             ),
@@ -410,10 +483,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   textCapitalization: TextCapitalization.words,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    suffixIcon: Icon(
-                      Icons.check,
-                      color: AppColor.green,
-                    ),
+                    suffixIcon: _emailstate
+                        ? Icon(
+                            Icons.check,
+                            color: AppColor.green,
+                          )
+                        : Icon(
+                            Icons.close,
+                            color: AppColor.red,
+                          ),
                     floatingLabelBehavior: FloatingLabelBehavior.auto,
                     filled: true,
                     fillColor: Colors.white,
@@ -430,6 +508,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                  onChanged: (value) {
+                    if (value.isEmpty) {
+                      _emailstate = false;
+                    } else {
+                      _emailstate = true;
+                    }
+                    setState(() {});
+                  },
                 ),
               ),
             ),

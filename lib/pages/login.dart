@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:real_estate/pages/otp.dart';
 import 'package:real_estate/theme/color.dart';
 import 'package:real_estate/utils/globals.dart' as global;
@@ -20,8 +19,6 @@ class _LoginPageState extends State<LoginPage> {
 
   final _phoneController = TextEditingController();
 
-  // Obtain shared preferences.
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   List<Map<String, dynamic>> agents = [];
   bool isExistUser = false;
 
@@ -52,13 +49,19 @@ class _LoginPageState extends State<LoginPage> {
     agents.forEach((element) {
       if (element['phone'] == _phoneController.text.trim()) {
         isExistUser = true;
+        global.firstName = element['first_name'];
+        global.lastName = element['last_name'];
+        global.location = element['address'];
+        global.phone = element['phone'];
+        global.email = element['email'];
+        global.category = element['category'] ?? '';
       }
     });
     if (!isExistUser) {
       Map<String, String> formData = {
-        "first_name": "user",
-        "last_name": "user",
-        "email": "${Random().nextInt(10000).toString()}@example.com",
+        "first_name": "",
+        "last_name": "",
+        "email": "",
         "password": "",
         "address": "",
         "phone": _phoneController.text.trim(),
@@ -68,6 +71,7 @@ class _LoginPageState extends State<LoginPage> {
         "country": "",
         "user_name": Random().nextInt(10000).toString()
       };
+      global.phone = _phoneController.text.trim();
 
       final response = await http.post(
           Uri.parse('https://properties-api.myspacetech.in/ver1/register/'),
@@ -93,8 +97,12 @@ class _LoginPageState extends State<LoginPage> {
             'id': item['id'].toString(),
             'image': item['image'],
             'name': item['name'],
+            'first_name': item['first_name'],
+            'last_name': item['last_name'],
+            'address': item['address'],
             'email': item['email'],
             'phone': item['phone'].toString(),
+            'category': item['category'],
           };
           updatedPopulars.add(newItem);
           debugPrint('${item['phone']}');
@@ -272,33 +280,11 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
                             var result = await _checkUser();
-                            _prefs.then((SharedPreferences prefs) {
-                              List<String>? memberTypes =
-                                  prefs.getStringList('membertypes');
-                              if (memberTypes == null) {
-                                memberTypes = [];
-                              }
-                              bool isExist = false;
-                              memberTypes.forEach((element) {
-                                List<String> info = element.split('_');
-                                if (info[0] == _phoneController.text.trim()) {
-                                  isExist = true;
-                                }
-                              });
-                              if (!isExist) {
-                                memberTypes.add(_phoneController.text.trim());
-                              }
-                              prefs
-                                  .setStringList('membertypes', memberTypes)
-                                  .then((bool success) {
-                                global.phone = _phoneController.text.trim();
-                              });
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const OTPPage()),
-                              );
-                            });
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const OTPPage()),
+                            );
                           }
                         },
                         child: const Text(

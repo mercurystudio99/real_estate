@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:real_estate/pages/user_profile.dart';
 import 'package:real_estate/pages/feedback.dart';
 import 'package:real_estate/pages/policy.dart';
@@ -16,7 +15,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late String _memberType = '';
 
   bool _notificationEnabled = false;
@@ -29,19 +27,8 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
     _currentTheme = ThemeData.light();
-    _prefs.then((SharedPreferences prefs) {
-      List<String>? memberTypes = prefs.getStringList('membertypes');
-      if (memberTypes == null) {
-        memberTypes = [];
-      }
-      memberTypes.forEach((element) {
-        List<String> info = element.split('_');
-        if (info[0] == global.phone) {
-          _memberType = info[1];
-        }
-      });
-      setState(() {});
-    });
+    _memberType = global.category;
+    setState(() {});
   }
 
   void _toggleTheme(bool value) {
