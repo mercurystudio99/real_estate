@@ -1,3 +1,4 @@
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:real_estate/theme/color.dart';
 import 'package:real_estate/utils/globals.dart' as global;
@@ -8,6 +9,16 @@ class PolicyPage extends StatefulWidget {
 }
 
 class _PolicyPageState extends State<PolicyPage> {
+  Future<void> _agreePolicy() async {
+    Map<String, String> formData = {
+      "phone": global.phone,
+    };
+
+    final response = await http.post(
+        Uri.parse('https://properties-api.myspacetech.in/ver1/agreepolicy/'),
+        body: formData);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,6 +97,7 @@ class _PolicyPageState extends State<PolicyPage> {
                         shadowColor: Colors.black.withOpacity(0.4),
                         padding: const EdgeInsets.all(5)),
                     onPressed: () {
+                      _agreePolicy();
                       global.policyAgree = true;
                       Navigator.pop(context);
                     },

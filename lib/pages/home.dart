@@ -56,6 +56,7 @@ class _HomePageState extends State<HomePage> {
             global.email = item['email'];
             global.category = item['category'] ?? '';
             global.likes = item['likes'] ?? '';
+            if (item['agreepolicy'] > 0) global.policyAgree = true;
           }
           final Map<String, dynamic> newItem = {
             'id': item['id'].toString(),
@@ -68,6 +69,7 @@ class _HomePageState extends State<HomePage> {
             'phone': item['phone'].toString(),
             'category': item['category'],
             'likes': item['likes'],
+            'agreepolicy': item['agreepolicy'],
           };
           updatedPopulars.add(newItem);
         }

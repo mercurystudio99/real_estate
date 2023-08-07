@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:real_estate/theme/color.dart';
 import 'package:real_estate/pages/mprofile.dart';
+import 'package:real_estate/utils/globals.dart' as global;
 import 'custom_image.dart';
 
 class AgentItem extends StatelessWidget {
@@ -128,7 +129,14 @@ class AgentItem extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: ElevatedButton.icon(
                         onPressed: () {
-                          // Handle button press
+                          if (global.policyAgree) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text('You can send a message.')));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text(
+                                    'You must agree to the Privacy Policy.')));
+                          }
                         },
                         icon: Icon(
                           Icons.send,

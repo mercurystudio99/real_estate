@@ -56,6 +56,7 @@ class _LoginPageState extends State<LoginPage> {
         global.email = element['email'];
         global.category = element['category'] ?? '';
         global.likes = element['likes'] ?? '';
+        if (element['agreepolicy'] > 0) global.policyAgree = true;
       }
     });
     if (!isExistUser) {
@@ -105,6 +106,7 @@ class _LoginPageState extends State<LoginPage> {
             'phone': item['phone'].toString(),
             'category': item['category'],
             'likes': item['likes'],
+            'agreepolicy': item['agreepolicy'],
           };
           updatedPopulars.add(newItem);
           debugPrint('${item['phone']}');

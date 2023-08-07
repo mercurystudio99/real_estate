@@ -157,6 +157,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 global.email = "";
                 global.category = "";
                 global.likes = "";
+                global.policyAgree = false;
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const LoginPage()),

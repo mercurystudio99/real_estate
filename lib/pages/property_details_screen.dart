@@ -429,7 +429,17 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               ),
                               trailing: ElevatedButton.icon(
                                   onPressed: () {
-                                    // Handle button press
+                                    if (global.policyAgree) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  'You can send a message.')));
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  'You must agree to the Privacy Policy.')));
+                                    }
                                   },
                                   icon: Icon(
                                     Icons.message,
