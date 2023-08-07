@@ -8,6 +8,7 @@ String location = "";
 String phone = "";
 String email = "";
 String category = "";
+String likes = "";
 
 bool policyAgree = false;
 

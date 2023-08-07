@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:real_estate/widgets/custom_image.dart';
 import 'package:real_estate/widgets/hot_item.dart';
 import 'package:real_estate/widgets/custom_textbox.dart';
 import 'package:real_estate/theme/color.dart';
+import 'package:real_estate/utils/globals.dart' as global;
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
@@ -16,8 +16,6 @@ class WishlistPage extends StatefulWidget {
 }
 
 class _WishlistPageState extends State<WishlistPage> {
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-
   List<Map<String, dynamic>> wishlist = [];
 
   @override
@@ -41,32 +39,27 @@ class _WishlistPageState extends State<WishlistPage> {
         final List<dynamic> properties = json.decode(response.body)["data"];
         List<Map<String, dynamic>> updatedPopulars = [];
 
-        _prefs.then((SharedPreferences prefs) {
-          List<String>? likes = prefs.getStringList('likes');
-          for (var item in properties) {
-            final Map<String, dynamic> newItem = {
-              'id': item['id'].toString(),
-              'image': item['image'],
-              'name': item['title'],
-              'price': "\₹" + item['price'].toString(),
-              'location':
-                  (item['address'] ?? "") + ", " + item['location_name'],
-              'is_favorited': false,
-              'bed': item['bed'].toString(),
-              'bathroom': item['bathroom'].toString(),
-              'square': item['square'].toString(),
-              "days_since": item['days_since'].toString(),
-              'rooms': item['room'].toString(),
-            };
-            if (likes != null) {
-              if (likes.contains(item['id'].toString())) {
-                updatedPopulars.add(newItem);
-              }
-            }
+        List<String> likes = global.likes.split(',');
+        for (var item in properties) {
+          final Map<String, dynamic> newItem = {
+            'id': item['id'].toString(),
+            'image': item['image'],
+            'name': item['title'],
+            'price': "\₹" + item['price'].toString(),
+            'location': (item['address'] ?? "") + ", " + item['location_name'],
+            'is_favorited': false,
+            'bed': item['bed'].toString(),
+            'bathroom': item['bathroom'].toString(),
+            'square': item['square'].toString(),
+            "days_since": item['days_since'].toString(),
+            'rooms': item['room'].toString(),
+          };
+          if (likes.contains(item['id'].toString())) {
+            updatedPopulars.add(newItem);
           }
-          setState(() {
-            wishlist = updatedPopulars;
-          });
+        }
+        setState(() {
+          wishlist = updatedPopulars;
         });
       } else {
         // Handle API error

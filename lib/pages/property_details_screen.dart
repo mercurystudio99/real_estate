@@ -4,10 +4,10 @@ import 'dart:async';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:real_estate/utils/common.dart';
 import 'package:real_estate/theme/color.dart';
 import 'package:real_estate/utils/constants.dart';
+import 'package:real_estate/utils/globals.dart' as global;
 import 'package:flutter_html/flutter_html.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:real_estate/widgets/custom_image.dart';
@@ -28,40 +28,39 @@ class _DetailsScreenState extends State<DetailsScreen> {
   List<Map<String, dynamic>> imageList = [];
   List<Map<String, dynamic>> populars = [];
   List<Map<String, dynamic>> facilities = [];
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
   void initState() {
     super.initState();
     id = widget.propertyId;
     populatePopulars(id);
-    _prefs.then((SharedPreferences prefs) {
-      List<String>? likes = prefs.getStringList('likes');
-      if (likes != null) {
-        likes.forEach((element) {
-          if (element == id) {
-            isLike = true;
-          }
-        });
+    List<String> likes = global.likes.split(',');
+    likes.forEach((element) {
+      if (element == id) {
+        isLike = true;
       }
     });
   }
 
   Future<void> _setFavorite() async {
-    final SharedPreferences prefs = await _prefs;
-    List<String>? likes = prefs.getStringList('likes');
-    if (likes == null) {
-      likes = [];
-    }
+    List<String> likes = global.likes.split(',');
     if (isLike) {
       likes.remove(id);
     } else {
       likes.add(id);
     }
-    prefs.setStringList('likes', likes).then((bool success) {
-      isLike = !isLike;
-      setState(() {});
-    });
+
+    Map<String, String> formData = {
+      "phone": global.phone,
+      "likes": likes.join(','),
+    };
+
+    final response = await http.post(
+        Uri.parse('https://properties-api.myspacetech.in/ver1/updatelikes/'),
+        body: formData);
+    global.likes = likes.join(',');
+    isLike = !isLike;
+    setState(() {});
   }
 
   Future<void> populatePopulars(String propId) async {

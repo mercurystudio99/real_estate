@@ -55,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
         global.phone = element['phone'];
         global.email = element['email'];
         global.category = element['category'] ?? '';
+        global.likes = element['likes'] ?? '';
       }
     });
     if (!isExistUser) {
