@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:real_estate/theme/color.dart';
 import 'package:real_estate/utils/globals.dart' as global;
@@ -25,28 +24,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
   bool _emailstate = false;
   bool _phonestate = false;
   bool _addressstate = false;
-
-  // final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-
-  // Future<void> _changePhone() async {
-  //   final SharedPreferences prefs = await _prefs;
-  //   List<String>? memberTypes = prefs.getStringList('membertypes');
-  //   if (memberTypes == null) {
-  //     memberTypes = [];
-  //   }
-  //   List<String> result = [];
-  //   memberTypes.forEach((element) {
-  //     List<String> info = element.split('_');
-  //     if (info[0] == global.phone) {
-  //       result.add(_phoneController.text.trim() + '_' + info[1]);
-  //     } else {
-  //       result.add(element);
-  //     }
-  //   });
-  //   prefs.setStringList('membertypes', result).then((bool success) {
-  //     global.phone = _phoneController.text.trim();
-  //   });
-  // }
 
   Future<void> _updateProfile() async {
     Map<String, String> formData = {
@@ -190,7 +167,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           global.location = _addressController.text.trim();
                           global.email = _emailController.text.trim();
                           global.phone = _phoneController.text.trim();
-                          // _changePhone();
                           _updateProfile();
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: const Text('Successfully updated!')));

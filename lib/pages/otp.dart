@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:real_estate/pages/choose.dart';
 import 'package:real_estate/pages/dashboard.dart';
 import 'package:real_estate/theme/color.dart';
@@ -22,6 +23,8 @@ class _OTPPageState extends State<OTPPage> {
   final FocusNode _focusThree = FocusNode();
   final FocusNode _focusFour = FocusNode();
 
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   // This is the entered code
   // It will be displayed in a Text widget
   String _otp = '';
@@ -31,6 +34,11 @@ class _OTPPageState extends State<OTPPage> {
       _otp =
           _fieldOne.text + _fieldTwo.text + _fieldThree.text + _fieldFour.text;
     });
+  }
+
+  Future<void> _setCredential() async {
+    final SharedPreferences prefs = await _prefs;
+    prefs.setString('phone', global.phone).then((bool success) {});
   }
 
   @override
@@ -158,6 +166,7 @@ class _OTPPageState extends State<OTPPage> {
                   _getOTPcode();
                   if (_otp == '1234') {
                     if (global.category.length > 0) {
+                      _setCredential();
                       Navigator.push(
                         context,
                         MaterialPageRoute(

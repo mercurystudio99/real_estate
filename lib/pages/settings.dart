@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:real_estate/pages/login.dart';
 import 'package:real_estate/pages/user_profile.dart';
 import 'package:real_estate/pages/feedback.dart';
 import 'package:real_estate/pages/policy.dart';
@@ -16,12 +18,18 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   late String _memberType = '';
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   bool _notificationEnabled = false;
   bool _darkThemeEnabled = false;
   List<String> _themes = ['Light', 'Dark'];
 
   ThemeData _currentTheme = ThemeData.light();
+
+  Future<void> _setCredential() async {
+    final SharedPreferences prefs = await _prefs;
+    prefs.setString('phone', '').then((bool success) {});
+  }
 
   @override
   void initState() {
@@ -141,7 +149,18 @@ class _SettingsPageState extends State<SettingsPage> {
               leading: Icon(Icons.logout_outlined),
               title: Text('Logout'),
               onTap: () {
-                // Add reset settings logic here
+                _setCredential();
+                global.firstName = "";
+                global.lastName = "";
+                global.location = "";
+                global.phone = "";
+                global.email = "";
+                global.category = "";
+                global.likes = "";
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                );
               },
             ),
           ],

@@ -12,6 +12,7 @@ import 'package:real_estate/widgets/property_item.dart';
 import 'package:real_estate/widgets/recent_item.dart';
 import 'package:real_estate/widgets/recommend_item.dart';
 import 'package:real_estate/pages/explore.dart';
+import 'package:real_estate/utils/globals.dart' as global;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -30,9 +31,53 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    populateAgents();
     populatePopulars();
     populateRecommended();
     populateRecent();
+  }
+
+  Future<void> populateAgents() async {
+    var url =
+        'https://properties-api.myspacetech.in/ver1/users'; // Replace with your actual API endpoint URL
+
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> properties = json.decode(response.body)["data"];
+        List<Map<String, dynamic>> updatedPopulars = [];
+        for (var item in properties) {
+          if (item['phone'].toString() == global.phone) {
+            global.firstName = item['first_name'];
+            global.lastName = item['last_name'];
+            global.location = item['address'];
+            global.phone = item['phone'];
+            global.email = item['email'];
+            global.category = item['category'] ?? '';
+            global.likes = item['likes'] ?? '';
+          }
+          final Map<String, dynamic> newItem = {
+            'id': item['id'].toString(),
+            'image': item['image'],
+            'name': item['name'],
+            'first_name': item['first_name'],
+            'last_name': item['last_name'],
+            'address': item['address'],
+            'email': item['email'],
+            'phone': item['phone'].toString(),
+            'category': item['category'],
+            'likes': item['likes'],
+          };
+          updatedPopulars.add(newItem);
+        }
+        global.users = updatedPopulars;
+      } else {
+        // Handle API error
+      }
+    } catch (error) {
+      // Handle error
+    }
   }
 
   Future<void> populatePopulars() async {

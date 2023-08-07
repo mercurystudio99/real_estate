@@ -1,5 +1,5 @@
 import 'package:http/http.dart' as http;
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:real_estate/theme/color.dart';
 import 'package:real_estate/pages/dashboard.dart';
@@ -14,6 +14,12 @@ class ChoosePage extends StatefulWidget {
 
 class _ChoosePageState extends State<ChoosePage> {
   late String _memberType = '';
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+  Future<void> _setCredential() async {
+    final SharedPreferences prefs = await _prefs;
+    prefs.setString('phone', global.phone).then((bool success) {});
+  }
 
   Future<void> _setMemberType() async {
     Map<String, String> formData = {
@@ -25,6 +31,7 @@ class _ChoosePageState extends State<ChoosePage> {
         Uri.parse(
             'https://properties-api.myspacetech.in/ver1/setusercategory/'),
         body: formData);
+    global.category = _memberType;
   }
 
   @override
@@ -207,6 +214,7 @@ class _ChoosePageState extends State<ChoosePage> {
                     ),
                 onPressed: () {
                   _setMemberType();
+                  _setCredential();
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const Dashboard()),
