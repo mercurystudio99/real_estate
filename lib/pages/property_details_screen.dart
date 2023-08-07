@@ -174,7 +174,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                     isLike
                                         ? Icons.favorite_rounded
                                         : Icons.favorite_border_rounded,
-                                    color: white,
+                                    color: isLike
+                                        ? AppColor.primary
+                                        : Colors.white,
                                   ),
                                 ))
                           ],

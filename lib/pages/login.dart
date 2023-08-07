@@ -104,6 +104,7 @@ class _LoginPageState extends State<LoginPage> {
             'email': item['email'],
             'phone': item['phone'].toString(),
             'category': item['category'],
+            'likes': item['likes'],
           };
           updatedPopulars.add(newItem);
           debugPrint('${item['phone']}');

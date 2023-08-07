@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:real_estate/theme/color.dart';
 import 'package:real_estate/pages/property_details_screen.dart';
-
+import 'package:real_estate/utils/globals.dart' as global;
 import 'custom_image.dart';
 import 'icon_box.dart';
 
@@ -12,6 +12,14 @@ class PropertyItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isLike = false;
+    List<String> likes = global.likes.split(',');
+    likes.forEach((element) {
+      if (element == data["id"].toString()) {
+        isLike = true;
+      }
+    });
+
     return GestureDetector(
       onTap: () {
         navigateToDetailPage(context, data["id"].toString());
@@ -43,7 +51,7 @@ class PropertyItem extends StatelessWidget {
             Positioned(
               right: 20,
               top: 10,
-              child: _buildFavorite(),
+              child: _buildFavorite(isLike),
             ),
             Positioned(
               right: 10,
@@ -70,12 +78,11 @@ class PropertyItem extends StatelessWidget {
     );
   }
 
-  Widget _buildFavorite() {
+  Widget _buildFavorite(bool isLike) {
     return IconBox(
-      //bgColor: data["is_favorited"] ? AppColor.primary : null,
       child: Icon(
-        data["is_favorited"] ? Icons.favorite : Icons.favorite_border,
-        color: data["is_favorited"] ? AppColor.primary : Colors.white,
+        isLike ? Icons.favorite : Icons.favorite_border,
+        color: isLike ? AppColor.primary : Colors.white,
         size: 25,
       ),
     );
@@ -84,7 +91,6 @@ class PropertyItem extends StatelessWidget {
   Widget _buildRating() {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       IconBox(
-        //bgColor: data["is_favorited"] ? AppColor.primary : null,
         child: Icon(
           Icons.star,
           size: 16,
