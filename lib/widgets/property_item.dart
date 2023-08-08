@@ -92,13 +92,15 @@ class PropertyItem extends StatelessWidget {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       IconBox(
         child: Icon(
-          Icons.star,
+          (data["review_score"] == null || data["review_score"] == '0.0')
+              ? Icons.star_outline
+              : Icons.star,
           size: 16,
           color: AppColor.yellow,
         ),
       ),
       Text(
-        "4.8",
+        data["review_score"] ?? '0.0',
         style: TextStyle(fontSize: 16),
       )
     ]);

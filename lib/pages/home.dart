@@ -105,6 +105,7 @@ class _HomePageState extends State<HomePage> {
             'bathroom': item['bathroom'].toString(),
             'square': item['square'].toString(),
             'rooms': item['room'].toString(),
+            'review_score': item['review_score'] ?? "0.0",
           };
           updatedPopulars.add(newItem);
         }

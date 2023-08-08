@@ -111,6 +111,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
           'rooms': propdetails['room'].toString() == 'null'
               ? "0"
               : propdetails['room'].toString(),
+          'review_score': propdetails['review_score'] ?? "0.0",
         };
         updatedDetails.add(newItemdetails);
 
@@ -239,8 +240,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             SizedBox(height: 10),
                             Row(children: [
                               RatingBar.builder(
-                                initialRating: 5,
-                                minRating: 1,
+                                initialRating:
+                                    double.parse(populars[0]['review_score']),
+                                minRating: 0,
                                 direction: Axis.horizontal,
                                 allowHalfRating: true,
                                 itemSize: 25,
@@ -252,7 +254,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 onRatingUpdate: (rating) {},
                               ),
                               const SizedBox(width: 10),
-                              const Text('4.8', style: TextStyle(fontSize: 20)),
+                              Text(populars[0]['review_score'] ?? '0.0',
+                                  style: TextStyle(fontSize: 20)),
                             ]),
                             SizedBox(height: 20),
                             Row(
