@@ -26,14 +26,16 @@ class _UploadPageState extends State<UploadPage> {
 
   Future<void> _postImages() async {
     try {
-      XFile? image = imageList[0];
-      File uploadimage = File(image.path);
-      List<int> imageBytes = uploadimage.readAsBytesSync();
-      String baseimage = base64Encode(imageBytes);
+      String baseimages = '';
+      imageList.forEach((image) {
+        File uploadimage = File(image.path);
+        List<int> imageBytes = uploadimage.readAsBytesSync();
+        baseimages = baseimages + base64Encode(imageBytes) + ",";
+      });
       final response = await http.post(
           Uri.parse('https://properties-api.myspacetech.in/ver1/uploadimages/'),
           body: {
-            'image': baseimage,
+            'images': baseimages,
             'phone': global.phone,
           });
       if (response.statusCode == 200) {
@@ -196,7 +198,9 @@ class _UploadPageState extends State<UploadPage> {
                           shadowColor: Colors.black.withOpacity(0.4),
                           padding: const EdgeInsets.all(5)),
                       onPressed: () {
-                        _postImages();
+                        if (imageList.length > 0) {
+                          _postImages();
+                        }
                       },
                       child: const Text(
                         'Post',
