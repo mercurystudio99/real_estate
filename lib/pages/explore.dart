@@ -61,6 +61,7 @@ class _ExplorePageState extends State<ExplorePage> {
             'bed': item['bed'].toString(),
             'bathroom': item['bathroom'].toString(),
             'square': item['square'].toString(),
+            'search_class': item['search_class'],
           };
           updatedPopulars.add(newItem);
         }
@@ -194,16 +195,32 @@ class _ExplorePageState extends State<ExplorePage> {
   }
 
   _buildBrokers() {
-    List<Widget> lists = List.generate(
-      listings.length,
-      (index) => BrokerItem(
-        data: listings[index],
-      ),
-    );
+    List<Map<String, dynamic>> list = [];
+    listings.forEach((element) {
+      if (element['search_class'] == _selectedCategory) {
+        list.add(element);
+      }
+    });
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15),
-      child: Column(children: lists),
-    );
+    if (list.isEmpty) {
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 15),
+        child: Column(children: [
+          Center(child: const Text('No data', style: TextStyle(fontSize: 20)))
+        ]),
+      );
+    } else {
+      List<Widget> lists = List.generate(
+        list.length,
+        (index) => BrokerItem(
+          data: list[index],
+        ),
+      );
+
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 15),
+        child: Column(children: lists),
+      );
+    }
   }
 }
