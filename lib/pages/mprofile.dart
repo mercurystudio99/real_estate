@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -19,13 +20,13 @@ class _MProfilePageState extends State<MProfilePage> {
   late String _memberType = '';
   late Map<String, dynamic> info = {
     'id': '',
-    'image': '',
+    'image': null,
     'name': '',
     'email': '',
     'phone': '',
     'location': '',
-    'reviews': '4',
-    'listings': '2',
+    'reviews': '0',
+    'listings': '0',
   };
   static bool isDocument = false;
 
@@ -34,17 +35,6 @@ class _MProfilePageState extends State<MProfilePage> {
     super.initState();
     id = widget.id;
     agent(id);
-    global.users.forEach((element) {
-      if (element["id"] == id) {
-        info['id'] = element['id'];
-        info['image'] = element['image'];
-        info['name'] = element['name'];
-        info['email'] = element['email'];
-        info['phone'] = element['phone'];
-      }
-    });
-    info['listings'] = global.imageList.length.toString();
-    _memberType = global.category;
   }
 
   // Future<void> _refreshPage() async {
@@ -57,22 +47,29 @@ class _MProfilePageState extends State<MProfilePage> {
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
-        // final List<dynamic> properties = json.decode(response.body)["data"];
-        // List<Map<String, dynamic>> updatedPopulars = [];
+        final List<dynamic> gallery = json.decode(response.body)["Images"];
+        final Map<String, dynamic> detail =
+            json.decode(response.body)["data"][0];
 
-        // for (var item in properties) {
-        //   final Map<String, dynamic> newItem = {
-        //     'id': item['id'].toString(),
-        //     'image': item['image'],
-        //     'name': item['name'],
-        //     'email': item['email'],
-        //     'phone': item['phone'].toString(),
-        //   };
-        //   updatedPopulars.add(newItem);
-        // }
-        // setState(() {
-        //   agents = updatedPopulars;
-        // });
+        List<Map<String, dynamic>> galleryList = [];
+        if (gallery.isNotEmpty) {
+          for (var item in gallery) {
+            final Map<String, dynamic> newItem = {
+              'img_url': item['img_url'],
+            };
+            galleryList.add(newItem);
+          }
+        }
+
+        info['id'] = detail['id'].toString();
+        info['image'] = detail['image'];
+        info['name'] = detail['name'];
+        info['email'] = detail['email'];
+        info['phone'] = detail['phone'];
+        info['listings'] = galleryList.length.toString();
+        _memberType = detail['category'] ?? '';
+
+        setState(() {});
       } else {
         // Handle API error
       }
