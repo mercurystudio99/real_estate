@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:real_estate/utils/globals.dart' as global;
 import 'package:real_estate/theme/color.dart';
 import 'package:real_estate/utils/constants.dart';
 
@@ -18,6 +16,7 @@ class MProfilePage extends StatefulWidget {
 class _MProfilePageState extends State<MProfilePage> {
   late String id;
   late String _memberType = '';
+  late List<Map<String, dynamic>> imageList = [];
   late Map<String, dynamic> info = {
     'id': '',
     'image': null,
@@ -68,6 +67,7 @@ class _MProfilePageState extends State<MProfilePage> {
         info['phone'] = detail['phone'];
         info['listings'] = galleryList.length.toString();
         _memberType = detail['category'] ?? '';
+        imageList = galleryList;
 
         setState(() {});
       } else {
@@ -328,14 +328,14 @@ class _MProfilePageState extends State<MProfilePage> {
   Widget _listing() {
     Size size = MediaQuery.of(context).size;
 
-    List<Widget> lists = global.imageList.map((item) {
+    List<Widget> lists = imageList.map((item) {
       return Container(
           child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: Image.file(
-            File(item.path),
+          child: Image.network(
+            item['img_url'],
             fit: BoxFit.cover,
             width: size.width * 0.25,
             height: size.width * 0.25,
