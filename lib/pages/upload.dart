@@ -1,5 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:real_estate/theme/color.dart';
@@ -23,10 +24,44 @@ class _UploadPageState extends State<UploadPage> {
     });
   }
 
+  Future<void> _postImages() async {
+    try {
+      XFile? image = imageList[0];
+      File uploadimage = File(image.path);
+      List<int> imageBytes = uploadimage.readAsBytesSync();
+      String baseimage = base64Encode(imageBytes);
+      final response = await http.post(
+          Uri.parse('https://properties-api.myspacetech.in/ver1/uploadimages/'),
+          body: {
+            'image': baseimage,
+            'phone': global.phone,
+          });
+      if (response.statusCode == 200) {
+        var jsondata = json.decode(response.body);
+        if (jsondata["error"]) {
+          debugPrint(jsondata["msg"]);
+        } else {
+          global.imageList = [];
+          imageList = [];
+          setState(() {});
+          debugPrint("Upload successful");
+        }
+      } else {
+        debugPrint("Error during connection to server");
+      }
+    } catch (error) {
+      debugPrint('Upload error: $error');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    imageList = global.imageList;
+    if (global.imageList.isNotEmpty) {
+      global.imageList.forEach((element) {
+        imageList.add(element);
+      });
+    }
   }
 
   @override
@@ -161,7 +196,7 @@ class _UploadPageState extends State<UploadPage> {
                           shadowColor: Colors.black.withOpacity(0.4),
                           padding: const EdgeInsets.all(5)),
                       onPressed: () {
-                        Navigator.pop(context);
+                        _postImages();
                       },
                       child: const Text(
                         'Post',
