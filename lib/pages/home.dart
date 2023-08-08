@@ -106,6 +106,7 @@ class _HomePageState extends State<HomePage> {
             'square': item['square'].toString(),
             'rooms': item['room'].toString(),
             'review_score': item['review_score'] ?? "0.0",
+            'category': item['category'],
           };
           updatedPopulars.add(newItem);
         }
@@ -146,6 +147,7 @@ class _HomePageState extends State<HomePage> {
             'square': item['square'].toString(),
             "days_since": item['days_since'].toString(),
             'rooms': item['room'].toString(),
+            'category': item['category'],
           };
           updatedRecent.add(newItem);
         }
@@ -185,6 +187,7 @@ class _HomePageState extends State<HomePage> {
             'bathroom': item['bathroom'].toString(),
             'square': item['square'].toString(),
             'rooms': item['room'].toString(),
+            'category': item['category'],
           };
           updatedRecommended.add(newItem);
         }
@@ -472,77 +475,157 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildPopulars() {
-    return CarouselSlider(
-      options: CarouselOptions(
-        height: 280,
-        enlargeCenterPage: true,
-        disableCenter: true,
-        viewportFraction: .8,
-      ),
-      items: List.generate(
-        populars.length,
-        (index) => PropertyItem(
-          data: populars[index],
+    List<Map<String, dynamic>> list = [];
+    populars.forEach((element) {
+      if (element['category'] == _selectedCategory && _selectedCategory != 0) {
+        list.add(element);
+      }
+      if (_selectedCategory == 0) {
+        list.add(element);
+      }
+    });
+
+    if (list.isEmpty) {
+      return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          child: Center(child: const Text('No data')));
+    } else {
+      return CarouselSlider(
+        options: CarouselOptions(
+          height: 280,
+          enlargeCenterPage: true,
+          disableCenter: true,
+          viewportFraction: .8,
         ),
-      ),
-    );
+        items: List.generate(
+          list.length,
+          (index) => PropertyItem(
+            data: list[index],
+          ),
+        ),
+      );
+    }
   }
 
   Widget _buildRecommended() {
-    List<Widget> lists = List.generate(
-      recommended.length,
-      (index) => RecommendItem(
-        data: recommended[index],
-      ),
-    );
+    List<Map<String, dynamic>> list = [];
+    recommended.forEach((element) {
+      if (element['category'] == _selectedCategory && _selectedCategory != 0) {
+        list.add(element);
+      }
+      if (_selectedCategory == 0) {
+        list.add(element);
+      }
+    });
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.only(bottom: 5, left: 15),
-      child: Row(children: lists),
-    );
+    if (list.isEmpty) {
+      return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          child: Center(child: const Text('No data')));
+    } else {
+      List<Widget> lists = List.generate(
+        list.length,
+        (index) => RecommendItem(
+          data: list[index],
+        ),
+      );
+
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.only(bottom: 5, left: 15),
+        child: Row(children: lists),
+      );
+    }
   }
 
   Widget _buildSpotlight() {
-    List<Widget> lists = List.generate(
-      recent.length,
-      (index) => SpotLightItem(
-        data: recent[index],
-      ),
-    );
+    List<Map<String, dynamic>> list = [];
+    recent.forEach((element) {
+      if (element['category'] == _selectedCategory && _selectedCategory != 0) {
+        list.add(element);
+      }
+      if (_selectedCategory == 0) {
+        list.add(element);
+      }
+    });
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Column(children: lists),
-    );
+    if (list.isEmpty) {
+      return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          child: Center(child: const Text('No data')));
+    } else {
+      List<Widget> lists = List.generate(
+        list.length,
+        (index) => SpotLightItem(
+          data: list[index],
+        ),
+      );
+
+      return SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Column(children: lists),
+      );
+    }
   }
 
   Widget _buildTrending() {
-    List<Widget> lists = List.generate(
-      recent.length,
-      (index) => RecentItem(
-        data: recent[index],
-      ),
-    );
+    List<Map<String, dynamic>> list = [];
+    recent.forEach((element) {
+      if (element['category'] == _selectedCategory && _selectedCategory != 0) {
+        list.add(element);
+      }
+      if (_selectedCategory == 0) {
+        list.add(element);
+      }
+    });
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.only(bottom: 5, left: 15),
-      child: Row(children: lists),
-    );
+    if (list.isEmpty) {
+      return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          child: Center(child: const Text('No data')));
+    } else {
+      List<Widget> lists = List.generate(
+        list.length,
+        (index) => RecentItem(
+          data: list[index],
+        ),
+      );
+
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.only(bottom: 5, left: 15),
+        child: Row(children: lists),
+      );
+    }
   }
 
   Widget _buildHot() {
-    List<Widget> lists = List.generate(
-      recent.length,
-      (index) => HotItem(
-        data: recent[index],
-      ),
-    );
+    List<Map<String, dynamic>> list = [];
+    recent.forEach((element) {
+      if (element['category'] == _selectedCategory && _selectedCategory != 0) {
+        list.add(element);
+      }
+      if (_selectedCategory == 0) {
+        list.add(element);
+      }
+    });
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Column(children: lists),
-    );
+    if (list.isEmpty) {
+      return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          child: Center(child: const Text('No data')));
+    } else {
+      List<Widget> lists = List.generate(
+        list.length,
+        (index) => HotItem(
+          data: list[index],
+        ),
+      );
+
+      return SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Column(children: lists),
+      );
+    }
   }
 }
