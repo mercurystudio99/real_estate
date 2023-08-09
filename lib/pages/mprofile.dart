@@ -34,6 +34,7 @@ class _MProfilePageState extends State<MProfilePage> {
     super.initState();
     id = widget.id;
     agent(id);
+    populatePopulars('10');
   }
 
   // Future<void> _refreshPage() async {
@@ -76,6 +77,34 @@ class _MProfilePageState extends State<MProfilePage> {
     } catch (error) {
       // Handle error
     }
+  }
+
+  Future<void> populatePopulars(String propId) async {
+    var url = 'https://properties-api.myspacetech.in/ver1/properties/' +
+        propId; // Replace with your actual API endpoint URL
+
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> properties = json.decode(response.body)["Images"];
+        List<Map<String, dynamic>> updatedPopulars = [];
+
+        for (var item in properties) {
+          final Map<String, dynamic> newItem = {
+            'img_url': item['img_url'],
+          };
+          updatedPopulars.add(newItem);
+        }
+
+        if (imageList.isEmpty) {
+          info['listings'] = updatedPopulars.length.toString();
+          setState(() {
+            imageList = updatedPopulars;
+          });
+        }
+      } else {}
+    } catch (error) {}
   }
 
   @override
