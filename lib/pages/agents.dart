@@ -44,8 +44,14 @@ class _AgentsPageState extends State<AgentsPage> {
             'id': item['id'].toString(),
             'image': item['image'],
             'name': item['name'],
+            'first_name': item['first_name'],
+            'last_name': item['last_name'],
+            'address': item['address'],
             'email': item['email'],
             'phone': item['phone'].toString(),
+            'category': item['category'],
+            'likes': item['likes'],
+            'agreepolicy': item['agreepolicy'],
           };
           updatedPopulars.add(newItem);
         }

@@ -25,6 +25,7 @@ class DetailsScreen extends StatefulWidget {
 
 class _DetailsScreenState extends State<DetailsScreen> {
   late String id;
+  late String userID;
   late bool isLike = false;
   bool imagesLoaded = false;
   List<Map<String, dynamic>> imageList = [];
@@ -46,6 +47,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
     likes.forEach((element) {
       if (element == id) {
         isLike = true;
+      }
+    });
+
+    global.users.forEach((element) {
+      if (element['phone'] == global.phone) {
+        userID = element['id'];
       }
     });
   }
@@ -85,6 +92,63 @@ class _DetailsScreenState extends State<DetailsScreen> {
         body: formData);
   }
 
+  Future<void> _updateReviews(String id) async {
+    Map<String, String> formData = {
+      "phone": global.phone,
+      "id": id,
+    };
+    final response = await http.post(
+        Uri.parse('https://properties-api.myspacetech.in/ver1/updatereview/'),
+        body: formData);
+
+    List<Map<String, dynamic>> tempList = [];
+    reviews.forEach((element) {
+      if (element['id'].toString() == id) {
+        if (element['likes'] == null) {
+          final Map<String, dynamic> newItem = {
+            'id': element['id'],
+            'title': element['title'],
+            'content': element['content'],
+            'rate_number': element['rate_number'] ?? 0,
+            'publish_date': element['publish_date'],
+            'vendor_id': element['vendor_id'],
+            'likes': '$userID,',
+          };
+          tempList.add(newItem);
+        } else {
+          if (element['likes'].toString().contains(userID)) {
+            final Map<String, dynamic> newItem = {
+              'id': element['id'],
+              'title': element['title'],
+              'content': element['content'],
+              'rate_number': element['rate_number'] ?? 0,
+              'publish_date': element['publish_date'],
+              'vendor_id': element['vendor_id'],
+              'likes': element['likes'].replaceAll('$userID,', ''),
+            };
+            tempList.add(newItem);
+          } else {
+            final Map<String, dynamic> newItem = {
+              'id': element['id'],
+              'title': element['title'],
+              'content': element['content'],
+              'rate_number': element['rate_number'] ?? 0,
+              'publish_date': element['publish_date'],
+              'vendor_id': element['vendor_id'],
+              'likes': element['likes'] + userID + ',',
+            };
+            tempList.add(newItem);
+          }
+        }
+      } else {
+        tempList.add(element);
+      }
+    });
+    reviews = [];
+    reviews = tempList;
+    setState(() {});
+  }
+
   Future<void> populatePopulars(String propId) async {
     var url = 'https://properties-api.myspacetech.in/ver1/properties/' +
         propId; // Replace with your actual API endpoint URL
@@ -120,6 +184,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
               'rate_number': item['rate_number'] ?? 0,
               'publish_date': item['publish_date'],
               'vendor_id': item['vendor_id'],
+              'likes': item['likes'],
             };
             updatedReviews.add(newItem);
           }
@@ -740,7 +805,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
       String name = '';
       String avatar = '';
       global.users.forEach((element) {
-        if (element['id'] == review['vendor_id']) {
+        if (element['id'].toString() == review['vendor_id'].toString()) {
           name = element['name'];
           avatar = element['image'];
         }
@@ -824,8 +889,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
     reviews.forEach((review) {
       String name = '';
       String avatar = '';
+      int count = 0;
+      if (review['likes'] != null) {
+        count = review['likes'].toString().split(',').length - 1;
+      }
       global.users.forEach((element) {
-        if (element['id'] == review['vendor_id']) {
+        if (element['id'].toString() == review['vendor_id'].toString()) {
           name = element['name'];
           avatar = element['image'];
         }
@@ -870,12 +939,17 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     style: TextStyle(color: Colors.grey),
                   ),
                   const Spacer(),
-                  Icon(
-                    Icons.favorite_outline,
-                    color: Colors.black,
-                  ),
-                  // const SizedBox(width: 10),
-                  // const Text('2'),
+                  IconButton(
+                      onPressed: () {
+                        _updateReviews(review['id'].toString());
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(
+                        (count > 0) ? Icons.favorite : Icons.favorite_outline,
+                        color: (count > 0) ? Colors.red : Colors.black,
+                      )),
+                  if (count > 0) const SizedBox(width: 10),
+                  if (count > 0) Text('$count'),
                   const SizedBox(width: 40),
                   Icon(Icons.messenger_outline_rounded)
                 ]),
