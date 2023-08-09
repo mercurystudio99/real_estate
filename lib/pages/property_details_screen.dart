@@ -69,7 +69,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
   Future<void> _postReview() async {
     Map<String, String> formData = {
       "phone": global.phone,
+      "object_id": id,
+      "title": '',
       "review": reviewController!.text.trim(),
+      "rating": '0',
     };
 
     final response = await http.post(
