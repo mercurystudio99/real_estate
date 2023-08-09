@@ -26,8 +26,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
   late bool isLike = false;
   bool imagesLoaded = false;
   List<Map<String, dynamic>> imageList = [];
+  List<Map<String, dynamic>> reviews = [];
   List<Map<String, dynamic>> populars = [];
   List<Map<String, dynamic>> facilities = [];
+
+  late TextEditingController? reviewController = TextEditingController();
 
   @override
   void initState() {
@@ -63,6 +66,17 @@ class _DetailsScreenState extends State<DetailsScreen> {
     setState(() {});
   }
 
+  Future<void> _postReview() async {
+    Map<String, String> formData = {
+      "phone": global.phone,
+      "review": reviewController!.text.trim(),
+    };
+
+    final response = await http.post(
+        Uri.parse('https://properties-api.myspacetech.in/ver1/addreview/'),
+        body: formData);
+  }
+
   Future<void> populatePopulars(String propId) async {
     var url = 'https://properties-api.myspacetech.in/ver1/properties/' +
         propId; // Replace with your actual API endpoint URL
@@ -72,11 +86,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
       if (response.statusCode == 200) {
         final List<dynamic> properties = json.decode(response.body)["Images"];
+        final List<dynamic> reviewss = json.decode(response.body)["reviews"];
         final Map<String, dynamic> propdetails =
             json.decode(response.body)["data"][0];
         final List<dynamic> propfacilities =
             propdetails['facilities'] != "" ? propdetails['facilities'] : [];
         List<Map<String, dynamic>> updatedPopulars = [];
+        List<Map<String, dynamic>> updatedReviews = [];
         List<Map<String, dynamic>> updatedDetails = [];
         List<Map<String, dynamic>> updatedFacilities = [];
 
@@ -85,6 +101,20 @@ class _DetailsScreenState extends State<DetailsScreen> {
             'img_url': item['img_url'],
           };
           updatedPopulars.add(newItem);
+        }
+
+        if (reviewss.isNotEmpty) {
+          for (var item in reviewss) {
+            final Map<String, dynamic> newItem = {
+              'id': item['id'],
+              'title': item['title'],
+              'content': item['content'],
+              'rate_number': item['rate_number'] ?? 0,
+              'publish_date': item['publish_date'],
+              'vendor_id': item['vendor_id'],
+            };
+            updatedReviews.add(newItem);
+          }
         }
 
         for (var facility in propfacilities) {
@@ -117,6 +147,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
         setState(() {
           imageList = updatedPopulars;
+          reviews = updatedReviews;
           populars = updatedDetails;
           facilities = updatedFacilities;
         });
@@ -641,55 +672,71 @@ class _DetailsScreenState extends State<DetailsScreen> {
   }
 
   Widget _buildReviews() {
-    return SizedBox(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 7, vertical: 20),
-        child: Column(children: [
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text('Reviews',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.only(left: 5),
-            leading: CustomImage(
-              'https://properties-api.myspacetech.in/aradhana.png',
-              width: 30,
-              height: 30,
+    if (reviews.isEmpty) {
+      return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          child: Center(child: const Text('No reviews')));
+    } else {
+      Map<String, dynamic> review = reviews[0];
+      String name = '';
+      String avatar = '';
+      global.users.forEach((element) {
+        if (element['id'] == review['vendor_id']) {
+          name = element['name'];
+          avatar = element['image'];
+        }
+      });
+      return SizedBox(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 7, vertical: 20),
+          child: Column(children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text('Reviews',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
             ),
-            title: Text(
-              'Mary Thompson',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+            ListTile(
+              contentPadding: EdgeInsets.only(left: 5),
+              leading: CustomImage(
+                (avatar == '')
+                    ? 'https://properties-api.myspacetech.in/aradhana.png'
+                    : avatar,
+                width: 30,
+                height: 30,
+              ),
+              title: Text(
+                name,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-          Html(
-            data:
-                'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-            style: {
-              'html': Style(
-                fontSize: FontSize(18.0),
-              ),
-            },
-          ),
-          SizedBox(height: 20),
-          GestureDetector(
-              onTap: () {
-                getAllReviews(onSuccess: (List<Widget> param) {
-                  _showAllReviewDialog(param);
-                });
-                // Navigator.restorablePush<void>(context, _fullscreenDialogRoute);
+            Html(
+              data: review['content'],
+              style: {
+                'html': Style(
+                  fontSize: FontSize(18.0),
+                ),
               },
-              child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text('See All Reviews',
-                      style:
-                          TextStyle(color: AppColor.primary, fontSize: 15)))),
-        ]),
-      ),
-    );
+            ),
+            SizedBox(height: 20),
+            GestureDetector(
+                onTap: () {
+                  getAllReviews(onSuccess: (List<Widget> param) {
+                    _showAllReviewDialog(param);
+                  });
+                  // Navigator.restorablePush<void>(context, _fullscreenDialogRoute);
+                },
+                child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text('See All Reviews',
+                        style:
+                            TextStyle(color: AppColor.primary, fontSize: 15)))),
+          ]),
+        ),
+      );
+    }
   }
 
   void getAllReviews({required Function(List<Widget>) onSuccess}) {
@@ -713,8 +760,18 @@ class _DetailsScreenState extends State<DetailsScreen> {
         ]),
       )
     ];
-    final List<Widget> reviews = [
-      Card(
+    final List<Widget> reviewList = [];
+
+    reviews.forEach((review) {
+      String name = '';
+      String avatar = '';
+      global.users.forEach((element) {
+        if (element['id'] == review['vendor_id']) {
+          name = element['name'];
+          avatar = element['image'];
+        }
+      });
+      Widget view = Card(
           margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           child: Padding(
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
@@ -722,12 +779,14 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 ListTile(
                   contentPadding: EdgeInsets.only(left: 5),
                   leading: CustomImage(
-                    'https://properties-api.myspacetech.in/aradhana.png',
+                    (avatar == '')
+                        ? 'https://properties-api.myspacetech.in/aradhana.png'
+                        : avatar,
                     width: 30,
                     height: 30,
                   ),
                   title: Text(
-                    'Mary Thompson',
+                    name,
                     style: TextStyle(
                       color: AppColor.primary,
                       fontSize: 16,
@@ -736,8 +795,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   ),
                 ),
                 Html(
-                  data:
-                      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+                  data: review['content'],
                   style: {
                     'html': Style(
                       fontSize: FontSize(18.0),
@@ -746,117 +804,28 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 ),
                 const SizedBox(height: 10),
                 Row(children: [
-                  const Text(
-                    'Four minutes ago',
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  const Spacer(),
-                  Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                  ),
-                  const SizedBox(width: 10),
-                  const Text('2'),
-                  const SizedBox(width: 40),
-                  Icon(Icons.messenger_outline_rounded)
-                ]),
-                const SizedBox(height: 10)
-              ]))),
-      Card(
-          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-              child: Column(children: [
-                ListTile(
-                  contentPadding: EdgeInsets.only(left: 5),
-                  leading: CustomImage(
-                    'https://properties-api.myspacetech.in/aradhana.png',
-                    width: 30,
-                    height: 30,
-                  ),
-                  title: Text(
-                    'Amy Perez',
-                    style: TextStyle(
-                      color: AppColor.primary,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Html(
-                  data:
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vulputate vitae nisi bibendum sagittis. Morbi ac suscipit risus. Nulla sollicitudin tortor sapien, vitae bibendum enim rhoncus ut.',
-                  style: {
-                    'html': Style(
-                      fontSize: FontSize(18.0),
-                    ),
-                  },
-                ),
-                const SizedBox(height: 10),
-                Row(children: [
-                  const Text(
-                    'Ten minutes ago',
+                  Text(
+                    (review['publish_date'] == null)
+                        ? ''
+                        : review['publish_date'].toString(),
                     style: TextStyle(color: Colors.grey),
                   ),
                   const Spacer(),
                   Icon(
                     Icons.favorite_outline,
+                    color: Colors.black,
                   ),
+                  // const SizedBox(width: 10),
+                  // const Text('2'),
                   const SizedBox(width: 40),
                   Icon(Icons.messenger_outline_rounded)
                 ]),
                 const SizedBox(height: 10)
-              ]))),
-      Card(
-          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-              child: Column(children: [
-                ListTile(
-                  contentPadding: EdgeInsets.only(left: 5),
-                  leading: CustomImage(
-                    'https://properties-api.myspacetech.in/aradhana.png',
-                    width: 30,
-                    height: 30,
-                  ),
-                  title: Text(
-                    'Mary Thompson',
-                    style: TextStyle(
-                      color: AppColor.primary,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Html(
-                  data:
-                      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-                  style: {
-                    'html': Style(
-                      fontSize: FontSize(18.0),
-                    ),
-                  },
-                ),
-                const SizedBox(height: 10),
-                Row(children: [
-                  const Text(
-                    'Four minutes ago',
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  const Spacer(),
-                  Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                  ),
-                  const SizedBox(width: 10),
-                  const Text('2'),
-                  const SizedBox(width: 40),
-                  Icon(Icons.messenger_outline_rounded)
-                ]),
-                const SizedBox(height: 10)
-              ]))),
-    ];
-    final List<Widget> result = [...topbar, ...reviews];
+              ])));
+      reviewList.add(view);
+    });
+
+    final List<Widget> result = [...topbar, ...reviewList];
     onSuccess(result);
   }
 
@@ -901,6 +870,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 50),
                                           child: TextField(
+                                            controller: reviewController,
                                             decoration: InputDecoration(
                                                 hintText: 'Enter Message'),
                                             keyboardType:
@@ -928,6 +898,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                                         const EdgeInsets.all(
                                                             5)),
                                                 onPressed: () {
+                                                  _postReview();
                                                   Navigator.pop(context);
                                                 },
                                                 child: const Text(
