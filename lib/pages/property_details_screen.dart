@@ -11,6 +11,8 @@ import 'package:real_estate/utils/globals.dart' as global;
 import 'package:flutter_html/flutter_html.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:real_estate/widgets/custom_image.dart';
+import 'package:dio/dio.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class DetailsScreen extends StatefulWidget {
   final String propertyId;
@@ -31,6 +33,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
   List<Map<String, dynamic>> facilities = [];
 
   late TextEditingController? reviewController = TextEditingController();
+
+  String fileurl =
+      "https://aradhana.myspacetech.in/uploads/0000/1/2023/02/20/floor21.pdf";
 
   @override
   void initState() {
@@ -145,6 +150,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
               ? "0"
               : propdetails['room'].toString(),
           'review_score': propdetails['review_score'] ?? "0.0",
+          'documents': propdetails['documents'],
         };
         updatedDetails.add(newItemdetails);
 
@@ -166,6 +172,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    int titleLength = 20;
+    if (populars.isNotEmpty && populars[0]['documents'] != null)
+      titleLength = 16;
     return Scaffold(
       body: SingleChildScrollView(
         child: Stack(
@@ -239,10 +248,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      populars[0]['name'].toString().length > 20
+                                      populars[0]['name'].toString().length >
+                                              titleLength
                                           ? populars[0]['name']
                                                   .toString()
-                                                  .substring(0, 16) +
+                                                  .substring(
+                                                      0, titleLength - 4) +
                                               '...'
                                           : populars[0]['name'].toString(),
                                       style: TextStyle(
@@ -250,6 +261,51 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
+                                    if (populars[0]['documents'] != null)
+                                      IconButton(
+                                          onPressed: () async {
+                                            Map<Permission, PermissionStatus>
+                                                statuses = await [
+                                              Permission.storage,
+                                              //add more permission to request here.
+                                            ].request();
+
+                                            if (statuses[Permission.storage]!
+                                                .isGranted) {
+                                              String savename = "download.pdf";
+                                              String savePath =
+                                                  "/storage/emulated/0/Download/$savename";
+                                              try {
+                                                await Dio()
+                                                    .download(fileurl, savePath,
+                                                        onReceiveProgress:
+                                                            (received, total) {
+                                                  if (total != -1) {
+                                                    debugPrint((received /
+                                                                total *
+                                                                100)
+                                                            .toStringAsFixed(
+                                                                0) +
+                                                        "%");
+                                                    //you can build progressbar feature too
+                                                  }
+                                                });
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  const SnackBar(
+                                                      content: Text(
+                                                          'File is saved to download folder.')),
+                                                );
+                                              } on DioException catch (e) {
+                                                debugPrint(e.message);
+                                              }
+                                            } else {
+                                              debugPrint(
+                                                  "No permission to read and write.");
+                                            }
+                                          },
+                                          icon: Icon(Icons.file_download_sharp,
+                                              color: AppColor.primary)),
                                     Icon(Icons.share, color: AppColor.primary)
                                   ]),
                             ),
