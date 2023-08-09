@@ -4,7 +4,6 @@ import 'package:real_estate/utils/common.dart';
 import 'package:real_estate/utils/data.dart';
 import 'package:real_estate/widgets/broker_item.dart';
 import 'package:real_estate/widgets/company_item.dart';
-import 'package:real_estate/widgets/custom_textbox.dart';
 import 'package:real_estate/widgets/icon_box.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -22,6 +21,9 @@ class ExplorePage extends StatefulWidget {
 
 class _ExplorePageState extends State<ExplorePage> {
   List<Map<String, dynamic>> listings = [];
+
+  late TextEditingController? searchcontroller = TextEditingController();
+  late String searchkeyword = '';
 
   @override
   void initState() {
@@ -118,11 +120,50 @@ class _ExplorePageState extends State<ExplorePage> {
     return Row(
       children: [
         Expanded(
-          child: CustomTextBox(
-            hint: "Search",
-            prefix: Icon(Icons.search, color: Colors.grey),
+            child: Container(
+          alignment: Alignment.center,
+          height: 50,
+          decoration: BoxDecoration(
+            color: AppColor.textBoxColor,
+            border: Border.all(color: Colors.transparent),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: AppColor.shadowColor.withOpacity(.05),
+                spreadRadius: .5,
+                blurRadius: .5,
+                offset: Offset(0, 1), // changes position of shadow
+              ),
+            ],
           ),
-        ),
+          child: TextField(
+            readOnly: false,
+            controller: searchcontroller,
+            decoration: InputDecoration(
+              prefixIcon: Icon(Icons.search, color: Colors.grey),
+              suffixIcon: Icon(Icons.filter_alt, color: Colors.grey),
+              border: OutlineInputBorder(),
+              fillColor: Colors.white,
+              filled: true,
+              enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  borderSide: BorderSide(color: Colors.black)),
+              focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  borderSide: BorderSide(color: Colors.black)),
+              hintText: "Search...",
+              hintStyle: TextStyle(
+                color: Colors.grey,
+                fontSize: 15,
+              ),
+            ),
+            onChanged: (value) {
+              setState(() {
+                searchkeyword = value;
+              });
+            },
+          ),
+        )),
         const SizedBox(
           width: 10,
         ),
@@ -197,8 +238,10 @@ class _ExplorePageState extends State<ExplorePage> {
   _buildBrokers() {
     List<Map<String, dynamic>> list = [];
     listings.forEach((element) {
-      if (element['search_class'] == _selectedCategory) {
-        list.add(element);
+      if (element['name'].contains(searchkeyword)) {
+        if (element['search_class'] == _selectedCategory) {
+          list.add(element);
+        }
       }
     });
 
