@@ -72,7 +72,9 @@ class _MProfilePageState extends State<MProfilePage> {
         imageList = galleryList;
 
         setState(() {});
-        populatePopulars(id);
+        if (_memberType != 'vendor') {
+          populatePopulars(id);
+        }
       } else {
         // Handle API error
       }
@@ -368,7 +370,7 @@ class _MProfilePageState extends State<MProfilePage> {
   }
 
   Widget _listing() {
-    if (_memberType != 'vendor') {
+    if (_memberType == 'vendor') {
       Size size = MediaQuery.of(context).size;
 
       List<Widget> lists = imageList.map((item) {
