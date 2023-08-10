@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:real_estate/theme/color.dart';
 import 'package:real_estate/utils/constants.dart';
+import 'package:real_estate/widgets/hot_item.dart';
 
 class MProfilePage extends StatefulWidget {
   final String id;
@@ -17,6 +18,7 @@ class _MProfilePageState extends State<MProfilePage> {
   late String id;
   late String _memberType = '';
   late List<Map<String, dynamic>> imageList = [];
+  List<Map<String, dynamic>> populars = [];
   late Map<String, dynamic> info = {
     'id': '',
     'image': null,
@@ -34,7 +36,6 @@ class _MProfilePageState extends State<MProfilePage> {
     super.initState();
     id = widget.id;
     agent(id);
-    populatePopulars('10');
   }
 
   // Future<void> _refreshPage() async {
@@ -71,6 +72,7 @@ class _MProfilePageState extends State<MProfilePage> {
         imageList = galleryList;
 
         setState(() {});
+        populatePopulars(id);
       } else {
         // Handle API error
       }
@@ -79,30 +81,41 @@ class _MProfilePageState extends State<MProfilePage> {
     }
   }
 
-  Future<void> populatePopulars(String propId) async {
-    var url = 'https://properties-api.myspacetech.in/ver1/properties/' +
-        propId; // Replace with your actual API endpoint URL
+  Future<void> populatePopulars(String userId) async {
+    var url =
+        'https://properties-api.myspacetech.in/ver1/properties/recent'; // Replace with your actual API endpoint URL
 
     try {
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
-        final List<dynamic> properties = json.decode(response.body)["Images"];
+        final List<dynamic> properties = json.decode(response.body)["data"];
         List<Map<String, dynamic>> updatedPopulars = [];
 
         for (var item in properties) {
-          final Map<String, dynamic> newItem = {
-            'img_url': item['img_url'],
-          };
-          updatedPopulars.add(newItem);
+          if (userId == item['create_user'].toString()) {
+            final Map<String, dynamic> newItem = {
+              'id': item['id'].toString(),
+              'image': item['image'],
+              'name': item['title'],
+              'price': "\₹" + item['price'].toString(),
+              'location':
+                  (item['address'] ?? "") + ", " + item['location_name'],
+              'is_favorited': false,
+              'bed': item['bed'].toString(),
+              'bathroom': item['bathroom'].toString(),
+              'square': item['square'].toString(),
+              "days_since": item['days_since'].toString(),
+              'rooms': item['room'].toString(),
+              'category': item['category'],
+            };
+            updatedPopulars.add(newItem);
+          }
         }
-
-        if (imageList.isEmpty) {
+        setState(() {
           info['listings'] = updatedPopulars.length.toString();
-          setState(() {
-            imageList = updatedPopulars;
-          });
-        }
+          populars = updatedPopulars;
+        });
       } else {}
     } catch (error) {}
   }
@@ -355,46 +368,50 @@ class _MProfilePageState extends State<MProfilePage> {
   }
 
   Widget _listing() {
-    Size size = MediaQuery.of(context).size;
+    if (_memberType != 'vendor') {
+      Size size = MediaQuery.of(context).size;
 
-    List<Widget> lists = imageList.map((item) {
-      return Container(
-          child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-            item['img_url'],
-            fit: BoxFit.cover,
-            width: size.width * 0.25,
-            height: size.width * 0.25,
+      List<Widget> lists = imageList.map((item) {
+        return Container(
+            child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              item['img_url'],
+              fit: BoxFit.cover,
+              width: size.width * 0.25,
+              height: size.width * 0.25,
+            ),
           ),
-        ),
-      ));
-    }).toList();
-    int rowCount = lists.length ~/ 2;
-    List<Widget> rowList = [
-      Row(children: [const SizedBox(height: 10)]),
-    ];
-    for (int i = 0; i < rowCount + 1; i++) {
-      if (lists.length > 2 * (i + 1)) {
-        rowList.add(Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: lists.sublist(2 * i, 2 * (i + 1))));
-      } else {
-        rowList.add(Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: lists.sublist(2 * i, lists.length)));
+        ));
+      }).toList();
+      int rowCount = lists.length ~/ 2;
+      List<Widget> rowList = [
+        Row(children: [const SizedBox(height: 10)]),
+      ];
+      for (int i = 0; i < rowCount + 1; i++) {
+        if (lists.length > 2 * (i + 1)) {
+          rowList.add(Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: lists.sublist(2 * i, 2 * (i + 1))));
+        } else {
+          rowList.add(Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: lists.sublist(2 * i, lists.length)));
+        }
       }
-    }
 
-    return Container(
-      width: size.width,
-      child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: rowList),
-    );
+      return Container(
+        width: size.width,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: rowList),
+      );
+    } else {
+      return _buildHot();
+    }
   }
 
   Widget _document() {
@@ -412,5 +429,25 @@ class _MProfilePageState extends State<MProfilePage> {
         trailing: Icon(Icons.close),
       ),
     );
+  }
+
+  Widget _buildHot() {
+    if (populars.isEmpty) {
+      return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          child: Center(child: const Text('No data')));
+    } else {
+      List<Widget> lists = List.generate(
+        populars.length,
+        (index) => HotItem(
+          data: populars[index],
+        ),
+      );
+
+      return SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Column(children: lists),
+      );
+    }
   }
 }
