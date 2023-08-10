@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
 import 'package:real_estate/theme/color.dart';
 import 'package:real_estate/utils/constants.dart';
@@ -30,6 +32,9 @@ class _MProfilePageState extends State<MProfilePage> {
     'listings': '0',
   };
   static bool isDocument = false;
+  late bool existDocument = false;
+  String fileurl =
+      "https://aradhana.myspacetech.in/uploads/0000/1/2023/02/20/floor21.pdf";
 
   @override
   void initState() {
@@ -49,6 +54,8 @@ class _MProfilePageState extends State<MProfilePage> {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final List<dynamic> gallery = json.decode(response.body)["Images"];
+        final List<Map<String, dynamic>> reviews =
+            json.decode(response.body)["reviews"];
         final Map<String, dynamic> detail =
             json.decode(response.body)["data"][0];
 
@@ -68,13 +75,12 @@ class _MProfilePageState extends State<MProfilePage> {
         info['email'] = detail['email'];
         info['phone'] = detail['phone'];
         info['listings'] = galleryList.length.toString();
+        info['reviews'] = reviews.length;
         _memberType = detail['category'] ?? '';
         imageList = galleryList;
 
         setState(() {});
-        if (_memberType != 'vendor') {
-          populatePopulars(id);
-        }
+        populatePopulars(id);
       } else {
         // Handle API error
       }
@@ -93,6 +99,7 @@ class _MProfilePageState extends State<MProfilePage> {
       if (response.statusCode == 200) {
         final List<dynamic> properties = json.decode(response.body)["data"];
         List<Map<String, dynamic>> updatedPopulars = [];
+        bool isDocument = false;
 
         for (var item in properties) {
           if (userId == item['create_user'].toString()) {
@@ -112,11 +119,17 @@ class _MProfilePageState extends State<MProfilePage> {
               'category': item['category'],
             };
             updatedPopulars.add(newItem);
+            if (item['documents'] != null && item['documents'] != '') {
+              isDocument = true;
+            }
           }
         }
         setState(() {
-          info['listings'] = updatedPopulars.length.toString();
+          if (_memberType != 'vendor') {
+            info['listings'] = updatedPopulars.length.toString();
+          }
           populars = updatedPopulars;
+          existDocument = isDocument;
         });
       } else {}
     } catch (error) {}
@@ -417,20 +430,54 @@ class _MProfilePageState extends State<MProfilePage> {
   }
 
   Widget _document() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: ListTile(
-        tileColor: Colors.blue.shade200.withOpacity(0.5),
-        leading: Icon(
-          Icons.picture_as_pdf_sharp,
-          size: 40,
+    if (existDocument) {
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        margin: EdgeInsets.symmetric(vertical: 10),
+        child: ListTile(
+          tileColor: Colors.blue.shade200.withOpacity(0.5),
+          leading: Icon(
+            Icons.picture_as_pdf_sharp,
+            size: 40,
+          ),
+          title: const Text('floor21.pdf'),
+          // subtitle: const Text('13/06/2020 9:58 256.4KB'),
+          trailing: IconButton(
+              onPressed: () async {
+                Map<Permission, PermissionStatus> statuses = await [
+                  Permission.storage,
+                  //add more permission to request here.
+                ].request();
+
+                if (statuses[Permission.storage]!.isGranted) {
+                  String savename = "floor21.pdf";
+                  String savePath = "/storage/emulated/0/Download/$savename";
+                  try {
+                    await Dio().download(fileurl, savePath,
+                        onReceiveProgress: (received, total) {
+                      if (total != -1) {
+                        debugPrint(
+                            (received / total * 100).toStringAsFixed(0) + "%");
+                        //you can build progressbar feature too
+                      }
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('File is saved to download folder.')),
+                    );
+                  } on DioException catch (e) {
+                    debugPrint(e.message);
+                  }
+                } else {
+                  debugPrint("No permission to read and write.");
+                }
+              },
+              icon: Icon(Icons.file_download_sharp, color: AppColor.primary)),
         ),
-        title: const Text('Get started.pdf'),
-        subtitle: const Text('13/06/2020 9:58 256.4KB'),
-        trailing: Icon(Icons.close),
-      ),
-    );
+      );
+    } else {
+      return SizedBox(height: 1);
+    }
   }
 
   Widget _buildHot() {
