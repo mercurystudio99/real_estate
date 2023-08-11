@@ -28,7 +28,7 @@ class _MProfilePageState extends State<MProfilePage> {
     'email': '',
     'phone': '',
     'location': '',
-    'reviews': '0',
+    'reviews': 0,
     'listings': '0',
   };
   static bool isDocument = false;
@@ -54,8 +54,7 @@ class _MProfilePageState extends State<MProfilePage> {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final List<dynamic> gallery = json.decode(response.body)["Images"];
-        final List<Map<String, dynamic>> reviews =
-            json.decode(response.body)["reviews"];
+        final List<dynamic> reviews = json.decode(response.body)["reviews"];
         final Map<String, dynamic> detail =
             json.decode(response.body)["data"][0];
 
@@ -281,7 +280,7 @@ class _MProfilePageState extends State<MProfilePage> {
                 Column(
                   children: [
                     Text(
-                      info["reviews"] ?? '',
+                      info["reviews"].toString(),
                       style:
                           TextStyle(fontSize: 34, color: Colors.grey.shade700),
                     ),

@@ -239,7 +239,7 @@ class _ExplorePageState extends State<ExplorePage> {
     List<Map<String, dynamic>> list = [];
     listings.forEach((element) {
       if (element['name'].contains(searchkeyword)) {
-        if (element['search_class'] == _selectedCategory) {
+        if (element['search_class'] == _selectedCategory.toString()) {
           list.add(element);
         }
       }
