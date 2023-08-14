@@ -82,7 +82,7 @@ class PropertyItem extends StatelessWidget {
     return IconBox(
       child: Icon(
         isLike ? Icons.favorite : Icons.favorite_border,
-        color: isLike ? AppColor.primary : Colors.white,
+        color: Colors.red,
         size: 25,
       ),
     );

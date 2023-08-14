@@ -283,9 +283,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                     isLike
                                         ? Icons.favorite_rounded
                                         : Icons.favorite_border_rounded,
-                                    color: isLike
-                                        ? AppColor.primary
-                                        : Colors.white,
+                                    color: Colors.red,
                                   ),
                                 ))
                           ],
@@ -946,7 +944,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       },
                       icon: Icon(
                         (count > 0) ? Icons.favorite : Icons.favorite_outline,
-                        color: (count > 0) ? Colors.red : Colors.black,
+                        color: Colors.red,
                       )),
                   if (count > 0) const SizedBox(width: 10),
                   if (count > 0) Text('$count'),
